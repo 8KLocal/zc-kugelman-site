@@ -1,0 +1,65 @@
+{
+  "_readme": "AI-generated concept renderings, NOT photos of completed work. Images live in images/concepts/. See UPDATING.md.",
+  "concepts": [
+    {
+      "src": "images/concepts/ground-floor-plan.jpg",
+      "title": "Ground Floor Plan Study",
+      "room": "Floor Plan",
+      "description": "A hand-drafted style layout: kitchen with island, a long dining table, living room and stair. AI-generated, not a real plan."
+    },
+    {
+      "src": "images/concepts/layout-sketch.jpg",
+      "title": "Kitchen & Dining Layout Sketch",
+      "room": "Floor Plan",
+      "description": "A tracing-paper sketch testing the island, counters and table placement. AI-generated."
+    },
+    {
+      "src": "images/concepts/shabbos-dining.jpg",
+      "title": "Friday Night Dining Room",
+      "room": "Dining",
+      "description": "A brownstone dining room set for Shabbos: candlesticks, challah, and soft evening light."
+    },
+    {
+      "src": "images/concepts/kosher-kitchen.jpg",
+      "title": "Two-Zone Kosher Kitchen",
+      "room": "Kitchen",
+      "description": "Separate meat (navy) and dairy (cream) zones, each with its own sink, around a marble island."
+    },
+    {
+      "src": "images/concepts/seforim-living-room.jpg",
+      "title": "Seforim Library Living Room",
+      "room": "Living",
+      "description": "Floor-to-ceiling walnut shelving with a library ladder and brass reading lights."
+    },
+    {
+      "src": "images/concepts/yom-tov-dining.jpg",
+      "title": "Yom Tov Dining for Twenty",
+      "room": "Dining",
+      "description": "An extended table, a glass-front china cabinet for holiday dishes, and twin chandeliers."
+    },
+    {
+      "src": "images/concepts/brownstone-foyer.jpg",
+      "title": "Brownstone Foyer",
+      "room": "Entry",
+      "description": "An arched entry with a mezuzah, a curved walnut stair, and a checkered marble floor."
+    },
+    {
+      "src": "images/concepts/sukkah-ready-porch.jpg",
+      "title": "Sukkah-Ready Porch",
+      "room": "Outdoor",
+      "description": "A louvered roof that opens for schach, cedar walls, and a long table for the family."
+    },
+    {
+      "src": "images/concepts/kids-bunk-room.jpg",
+      "title": "Shared Kids' Room",
+      "room": "Kids",
+      "description": "Built-in sage bunks with brass rails, reading nooks, and lots of drawers."
+    },
+    {
+      "src": "images/concepts/primary-bedroom.jpg",
+      "title": "Calm Primary Bedroom",
+      "room": "Bedroom",
+      "description": "Layered linen, a bouclé reading chair, and a sunny bay window."
+    }
+  ]
+}
