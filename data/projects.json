@@ -13,7 +13,7 @@
       "description": "SAMPLE ENTRY, not a real client. Images and the plan sketch are placeholders. A real project would explain the layout problem and the solution, for example how the kitchen was re-planned into separate meat and dairy work zones with their own sinks and counters, and how the wall to the dining room moved so the table could extend for Yom Tov with a clear walkway behind the chairs.",
       "cover": "images/projects/sample-park-slope-kosher-kitchen/01.jpg",
       "images": [
-        { "src": "images/projects/sample-park-slope-kosher-kitchen/01.jpg", "alt": "Kosher kitchen with navy meat zone and cream dairy zone", "caption": "Meat zone in navy, dairy zone in cream (sample image)" },
+        { "src": "images/projects/sample-park-slope-kosher-kitchen/01.jpg", "alt": "Kosher kitchen with two sink and prep areas around a marble island", "caption": "Two work zones, each with its own sink (sample image)" },
         { "src": "images/projects/sample-park-slope-kosher-kitchen/02.jpg", "alt": "Long dining room table set for guests", "caption": "Dining room planned for Yom Tov (sample image)" }
       ],
       "plans": [
