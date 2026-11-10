@@ -9,9 +9,9 @@ window.SITE_CONFIG = {
   tagline: "Space planning and layouts for Brooklyn homes: the right size for every room, and the right place for everything.",
   location: "Brooklyn, New York",
 
-  // CONTACT: TBD placeholders. Replace with real details before launch.
-  phone: "TBD",                          // e.g. "(718) 555-0000"
-  email: "TBD",                          // e.g. "hello@yourdomain.com"
+  // CONTACT
+  phone: "(347) 526-7400",               // shown on the site; tap-to-call uses tel:+13475267400
+  email: "zckugel@gmail.com",
   instagram: "",                         // e.g. "https://instagram.com/yourhandle" (blank = hidden)
 
   // CONTACT FORM

@@ -195,6 +195,9 @@ em{font-style:italic;color:var(--burgundy)}
 .footer{background:#14201a;color:rgba(244,234,216,.7);padding:3.8rem 0 2.3rem;border-top:3px double rgba(244,234,216,.2)}
 .footer-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:2rem}
 .footer-brand{font-family:var(--display);font-size:2rem;font-style:italic;color:var(--paper);margin:0 0 .4rem}
+.footer-contact{margin:.75rem 0 0;font-size:1.05rem}
+.footer-contact a{color:var(--paper);text-decoration:none}
+.footer-contact a:hover{color:#e8c9a0}
 .footer-nav{display:flex;flex-wrap:wrap;gap:1.3rem;justify-content:flex-end}
 .footer-nav a{text-decoration:none;font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase}
 .footer-nav a:hover{color:#e8c9a0}

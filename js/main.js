@@ -45,7 +45,12 @@
     document.title = document.title.replace('ZC Kugelman Interiors', brand);
     $$('[data-phone]').forEach(function (el) {
       if (isTBD(C.phone)) { el.innerHTML = '<span class="tbd">TBD (placeholder)</span>'; el.removeAttribute('href'); }
-      else { el.textContent = C.phone; el.href = 'tel:' + C.phone.replace(/[^\d+]/g, ''); }
+      else {
+        el.textContent = C.phone;
+        var digits = C.phone.replace(/\D/g, '');
+        var tel = (digits.length === 10) ? ('+1' + digits) : (digits.length === 11 && digits.charAt(0) === '1' ? ('+' + digits) : (C.phone.replace(/[^\d+]/g, '') || digits));
+        el.href = 'tel:' + tel;
+      }
     });
     $$('[data-email]').forEach(function (el) {
       if (isTBD(C.email)) { el.innerHTML = '<span class="tbd">TBD (placeholder)</span>'; el.removeAttribute('href'); }
