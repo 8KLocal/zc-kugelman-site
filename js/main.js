@@ -207,7 +207,7 @@
     } catch (e) { lenis = null; }
   }
   function scrollToEl(target) {
-    var top = target.getBoundingClientRect().top + window.scrollY - (target.id === 'top' ? 0 : 60);
+    var top = target.getBoundingClientRect().top + window.scrollY - (target.id === 'top' ? 0 : 88);
     if (lenis) lenis.scrollTo(top, { duration: 1.4 });
     else window.scrollTo({ top: top, behavior: reduced ? 'auto' : 'smooth' });
   }
@@ -481,6 +481,7 @@
         else if (e.key === 'Escape') closeMenu();
       });
       initLenis();
+      window.__zcLenis = lenis;
       update();
     } catch (err) {
       console.error(err);

@@ -396,6 +396,40 @@ body.locked{overflow:hidden}
 .menu-open .burger span:first-child{top:21px;transform:rotate(45deg)}
 .menu-open .burger span:last-child{top:21px;transform:rotate(-45deg)}
 
+
+/* ---------- See it in 3D (interactive dollhouse) ---------- */
+.tour{background:var(--bg);border-top:3px double var(--line);scroll-margin-top:6rem}
+.tour-stage{position:relative;background:var(--plan-paper);border:3px double var(--green);min-height:min(70vh,640px);height:min(70vh,640px);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+.tour-canvas{display:block;width:100%;height:100%;vertical-align:top}
+.tour-stage.is-failed .tour-canvas,
+.tour-stage.is-failed .tour-ui,
+.tour-stage.is-failed .tour-hint,
+.tour-stage.is-failed .tour-loading{display:none}
+.tour-fallback{display:none;position:absolute;inset:0;place-items:center;align-content:center;text-align:center;padding:2rem;background:var(--plan-paper)}
+.tour-stage.is-failed .tour-fallback,
+.tour-fallback:not([hidden]){display:grid}
+.tour-fallback p{max-width:28rem;margin:0 auto 1.2rem;color:var(--muted)}
+.tour-loading{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--label);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--burgundy);background:var(--plan-paper);z-index:1;pointer-events:none}
+.tour-stage.is-ready .tour-loading{display:none}
+.tour-ui{position:absolute;left:0;right:0;top:0;display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.7rem .8rem;background:linear-gradient(to bottom,rgba(255,250,240,.92),rgba(255,250,240,0));pointer-events:none;z-index:2}
+.tour-ui > *{pointer-events:auto}
+.tour-rooms{display:flex;flex-wrap:wrap;gap:.35rem}
+.tour-btn{appearance:none;border:1px solid var(--green);background:var(--paper);color:var(--green);font:500 .58rem/1 var(--label);letter-spacing:.12em;text-transform:uppercase;padding:.48rem .7rem;cursor:pointer;transition:background .3s,color .3s}
+.tour-btn:hover,.tour-btn:focus-visible{background:var(--bg-2)}
+.tour-btn.is-on{background:var(--green);color:var(--paper)}
+.tour-toggle{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--label);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);cursor:pointer;background:var(--paper);border:1px solid var(--green);padding:.42rem .7rem}
+.tour-toggle input{accent-color:var(--green);margin:0}
+.tour-hint{position:absolute;right:.8rem;bottom:.55rem;margin:0;font-family:var(--label);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--burgundy);background:rgba(255,250,240,.82);padding:.25rem .5rem;z-index:2;pointer-events:none}
+.tour-note{font-family:var(--label);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--burgundy);text-align:center;margin:.75rem 0 0}
+@media (max-width:860px){
+  .tour-stage{min-height:min(72vh,520px);height:min(72vh,520px)}
+  .tour-hint{left:.8rem;right:auto;bottom:.5rem}
+}
+@media (max-width:600px){
+  .tour-ui{padding:.55rem .55rem 3.2rem}
+  .tour-btn,.tour-toggle{padding:.42rem .55rem}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0ms!important;scroll-behavior:auto!important}
 }

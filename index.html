@@ -27,6 +27,7 @@
     <nav class="nav-links" id="navLinks" aria-label="Main">
       <a href="#about">About</a>
       <a href="#plan">The Plan</a>
+      <a href="#tour">In 3D</a>
       <a href="#services">Services</a>
       <a href="#projects">Projects</a>
       <a href="#concepts">Design Concepts</a>
@@ -101,6 +102,37 @@
             <figcaption>Illustrative example plan, not a real client's home. Dimensions are for demonstration.</figcaption>
           </figure>
         </div>
+      </div>
+    </section>
+
+
+    <section class="section tour" id="tour" aria-label="Illustrative 3D layout">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow" data-reveal>See it in 3D</p>
+          <h2 class="h2" data-split>Walk through the <em>sample plan.</em></h2>
+          <p data-reveal>The same 40-by-28-foot ground floor as the plan above, built as a simple dollhouse you can turn and zoom. This is an illustrative example, not a client's home.</p>
+        </div>
+        <div class="tour-stage" id="tourStage" data-lenis-prevent>
+          <div class="tour-fallback" id="tourFallback" hidden>
+            <p>This 3D layout needs WebGL, which this browser doesn't support. The floor plan above shows the same rooms and dimensions.</p>
+            <a href="#plan" class="link-arrow">Back to the plan <span>&rarr;</span></a>
+          </div>
+          <div class="tour-loading" id="tourLoading" hidden>Loading the 3D layout&hellip;</div>
+          <canvas class="tour-canvas" id="tourCanvas" aria-label="Interactive 3D view of the illustrative sample home"></canvas>
+          <div class="tour-ui">
+            <div class="tour-rooms" role="toolbar" aria-label="Choose a room">
+              <button type="button" class="tour-btn is-on" data-view="home" aria-pressed="true">Whole home</button>
+              <button type="button" class="tour-btn" data-view="kitchen" aria-pressed="false">Kitchen</button>
+              <button type="button" class="tour-btn" data-view="dining" aria-pressed="false">Dining</button>
+              <button type="button" class="tour-btn" data-view="living" aria-pressed="false">Living</button>
+              <button type="button" class="tour-btn" data-view="study" aria-pressed="false">Study</button>
+            </div>
+            <label class="tour-toggle"><input type="checkbox" id="tourPlanView"> Top-down plan</label>
+          </div>
+          <p class="tour-hint">Drag to rotate &middot; scroll or pinch to zoom</p>
+        </div>
+        <p class="tour-note">Illustrative example, not a real client's home. Dimensions match the floor plan above.</p>
       </div>
     </section>
 
@@ -287,7 +319,7 @@
         <p class="footer-contact"><a data-phone></a> &middot; <a data-email></a></p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
-        <a href="#about">About</a><a href="#plan">The Plan</a><a href="#services">Services</a><a href="#projects">Projects</a><a href="#concepts">Design Concepts</a><a href="#contact">Contact</a>
+        <a href="#about">About</a><a href="#plan">The Plan</a><a href="#tour">In 3D</a><a href="#services">Services</a><a href="#projects">Projects</a><a href="#concepts">Design Concepts</a><a href="#contact">Contact</a>
       </nav>
       <div class="footer-small">
         <p>&copy; <span id="year"></span> <span data-brand></span>. <span data-location></span>.</p>
@@ -315,6 +347,15 @@
   <script src="js/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/tour.js"></script>
 </body>
 </html>
 
