@@ -23,7 +23,7 @@
       "src": "images/concepts/kosher-kitchen.jpg",
       "title": "Two-Zone Kosher Kitchen",
       "room": "Kitchen",
-      "description": "Two work zones, each with its own sink, around a marble island."
+      "description": "Meat and dairy sides, each with its own sink and stove, and a marble island for pareve prep."
     },
     {
       "src": "images/concepts/seforim-living-room.jpg",
@@ -44,10 +44,10 @@
       "description": "An arched entry with a mezuzah, a curved walnut stair, and a checkered marble floor."
     },
     {
-      "src": "images/concepts/sukkah-ready-porch.jpg",
-      "title": "Sukkah-Ready Porch",
-      "room": "Outdoor",
-      "description": "A louvered roof that opens for schach, cedar walls, and a long table for the family."
+      "src": "images/concepts/mudroom-entry-storage.jpg",
+      "title": "Mudroom & Entry Storage",
+      "room": "Entry",
+      "description": "Built-in cubbies, hooks and a bench, with tall cabinets for coats and Pesach dishes."
     },
     {
       "src": "images/concepts/kids-bunk-room.jpg",

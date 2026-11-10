@@ -10,10 +10,10 @@
       "categories": ["Kitchens", "Dining"],
       "scope": ["Kitchen layout", "Meat & dairy zoning", "Dining room sizing", "Furniture plan"],
       "summary": "A placeholder showing how a kitchen layout project will appear.",
-      "description": "SAMPLE ENTRY, not a real client. Images and the plan sketch are placeholders. A real project would explain the layout problem and the solution, for example how the kitchen was re-planned into separate meat and dairy work zones with their own sinks and counters, and how the wall to the dining room moved so the table could extend for Yom Tov with a clear walkway behind the chairs.",
+      "description": "SAMPLE ENTRY, not a real client. Images and the plan sketch are placeholders. A real project would explain the layout problem and the solution, for example how the kitchen was re-planned into separate meat and dairy work zones, each with its own sink and stove, plus a pareve island, and how the wall to the dining room moved so the table could extend for Yom Tov with a clear walkway behind the chairs.",
       "cover": "images/projects/sample-park-slope-kosher-kitchen/01.jpg",
       "images": [
-        { "src": "images/projects/sample-park-slope-kosher-kitchen/01.jpg", "alt": "Kosher kitchen with two sink and prep areas around a marble island", "caption": "Two work zones, each with its own sink (sample image)" },
+        { "src": "images/projects/sample-park-slope-kosher-kitchen/01.jpg", "alt": "Kosher kitchen with a sink and stove on each side and a pareve island", "caption": "Meat and dairy sides, each with its own sink and stove, plus a pareve island (sample image)" },
         { "src": "images/projects/sample-park-slope-kosher-kitchen/02.jpg", "alt": "Long dining room table set for guests", "caption": "Dining room planned for Yom Tov (sample image)" }
       ],
       "plans": [
@@ -42,22 +42,22 @@
       ]
     },
     {
-      "slug": "sample-midwood-sukkah-porch",
+      "slug": "sample-midwood-ground-floor",
       "sample": true,
-      "title": "SAMPLE: Ground Floor & Sukkah Deck Plan",
+      "title": "SAMPLE: Ground Floor Plan",
       "neighborhood": "Midwood (sample)",
       "year": "2026",
-      "categories": ["Full Home", "Outdoor", "Dining"],
-      "scope": ["Ground-floor layout", "Kitchen-to-sukkah flow", "Pesach pantry", "Dining for 14-20"],
+      "categories": ["Full Home", "Dining"],
+      "scope": ["Ground-floor layout", "Entry storage", "Pesach pantry", "Dining for 14-20"],
       "summary": "A placeholder showing an illustrative measured floor plan.",
-      "description": "SAMPLE ENTRY, not a real client. The photos and the floor plan are illustrative examples. A project like this would explain the planning decisions: a sukkah deck placed right off the kitchen, a dining room sized for a table that seats 14 and extends to 20, a Pesach pantry next to the dining room, and a study with a full seforim wall.",
-      "cover": "images/projects/sample-midwood-sukkah-porch/01.jpg",
+      "description": "SAMPLE ENTRY, not a real client. The photos and the floor plan are illustrative examples. A project like this would explain the planning decisions: a dining room sized for a table that seats 14 and extends to 20, a Pesach pantry next to the dining room, an entry with real storage for coats and bags, and a study with a full seforim wall.",
+      "cover": "images/projects/sample-midwood-ground-floor/02.jpg",
       "images": [
-        { "src": "images/projects/sample-midwood-sukkah-porch/01.jpg", "alt": "Covered porch with louvered roof and long table", "caption": "Deck that converts to a sukkah (sample image)" },
-        { "src": "images/projects/sample-midwood-sukkah-porch/02.jpg", "alt": "Dining room set for Shabbos with candles and challah", "caption": "Shabbos dining room (sample image)" }
+        { "src": "images/concepts/mudroom-entry-storage.jpg", "alt": "Mudroom with built-in cubbies, hooks and a bench", "caption": "Entry storage for coats, bags and Pesach dishes (sample image)" },
+        { "src": "images/projects/sample-midwood-ground-floor/02.jpg", "alt": "Dining room set for Shabbos with candles and challah", "caption": "Shabbos dining room (sample image)" }
       ],
       "plans": [
-        { "src": "images/projects/sample-midwood-sukkah-porch/plans/plan-01.svg", "alt": "Measured ground floor plan with kitchen, dining, pantry, living, entry, study and sukkah deck", "caption": "Ground floor plan, 40' × 28' (illustrative sample)" }
+        { "src": "images/projects/sample-midwood-ground-floor/plans/plan-01.svg", "alt": "Measured ground floor plan with kitchen, dining, pantry, living, entry and study", "caption": "Ground floor plan, 40' × 28' (illustrative sample)" }
       ]
     }
   ]
