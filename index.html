@@ -8,24 +8,20 @@
   <meta property="og:title" content="ZC Kugelman Interiors">
   <meta property="og:description" content="Space planning and layouts for Brooklyn homes: the right size for every room, and the right place for everything.">
   <meta property="og:image" content="images/hero/hero.jpg">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%232b2b2b'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='28' fill='%239a7b4f' text-anchor='middle'%3EZC%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231e3d32'/%3E%3Ctext x='32' y='42' font-family='EB Garamond,Georgia,serif' font-size='28' fill='%23f4ead8' text-anchor='middle'%3EZC%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    /* Enable animations; failsafe: if main.js never starts, show everything. */
     (function(d){d.classList.replace('no-js','js');setTimeout(function(){if(!window.__zcReady){d.classList.remove('js');d.classList.add('no-js','loaded');}},4000);})(document.documentElement);
   </script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <div class="progress" aria-hidden="true"><span></span></div>
-
-  <!-- Intro curtain -->
   <div class="curtain" aria-hidden="true"><span class="curtain-brand" data-brand></span></div>
 
-  <!-- NAV -->
   <header class="nav" id="nav">
     <a href="#top" class="nav-logo" aria-label="Home"><span class="mono">ZC</span><span data-brand-short></span></a>
     <nav class="nav-links" id="navLinks" aria-label="Main">
@@ -41,25 +37,26 @@
   </header>
 
   <main id="main">
-    <!-- HERO -->
     <section class="hero" id="top">
-      <div class="hero-media" data-parallax="0.25">
-        <img src="images/hero/hero.jpg" alt="A Brooklyn dining room set for Shabbos" fetchpriority="high">
-      </div>
-      <div class="hero-shade"></div>
-      <div class="hero-inner">
-        <p class="eyebrow hero-eyebrow">Space Planning &amp; Layouts &middot; <span data-location></span></p>
-        <h1 class="hero-title" data-split>Every room the right size. <em>Everything in its place.</em></h1>
-        <p class="hero-sub" data-tagline></p>
-        <div class="hero-actions">
-          <a href="#plan" class="btn btn-light">See how we plan</a>
-          <a href="#contact" class="btn btn-ghost">Book a consultation</a>
+      <div class="hero-frame">
+        <div class="hero-media" data-parallax="0.2">
+          <img src="images/hero/hero.jpg" alt="A Brooklyn dining room set for Shabbos" fetchpriority="high">
+        </div>
+        <div class="hero-shade"></div>
+        <div class="hero-inner">
+          <div class="hero-plate">
+            <p class="eyebrow hero-eyebrow">Space Planning &amp; Layouts &middot; <span data-location></span></p>
+            <h1 class="hero-title" data-split>Every room the right size. <em>Everything in its place.</em></h1>
+            <p class="hero-sub" data-tagline></p>
+            <div class="hero-actions">
+              <a href="#plan" class="btn btn-light">See how we plan</a>
+              <a href="#contact" class="btn btn-ghost">Book a consultation</a>
+            </div>
+          </div>
         </div>
       </div>
-      <a href="#about" class="scroll-cue" aria-label="Scroll down"><span></span></a>
     </section>
 
-    <!-- MARQUEE -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
         <span>Space Planning</span><i>&#10022;</i><span>Floor Plans</span><i>&#10022;</i><span>Room Sizing &amp; Proportions</span><i>&#10022;</i><span>Kosher Kitchen Layouts</span><i>&#10022;</i><span>Yom Tov Dining Layouts</span><i>&#10022;</i><span>Furniture Placement</span><i>&#10022;</i><span>Renovation &amp; Extension Planning</span><i>&#10022;</i>
@@ -67,7 +64,6 @@
       </div>
     </div>
 
-    <!-- ABOUT -->
     <section class="section about" id="about">
       <div class="container about-grid">
         <div class="about-media">
@@ -86,7 +82,6 @@
       </div>
     </section>
 
-    <!-- ANIMATED FLOOR PLAN -->
     <section class="plan" id="plan" aria-label="How a floor plan comes together">
       <div class="plan-sticky">
         <div class="container plan-grid">
@@ -109,12 +104,10 @@
       </div>
     </section>
 
-    <!-- COUNTERS -->
     <section class="counters" aria-label="Planning numbers">
       <div class="container counters-grid" id="counters"></div>
     </section>
 
-    <!-- SERVICES -->
     <section class="section services" id="services">
       <div class="container">
         <div class="section-head">
@@ -163,7 +156,6 @@
       </div>
     </section>
 
-    <!-- HORIZONTAL SCROLL -->
     <section class="hscroll" id="details" aria-label="Planned for a Jewish home">
       <div class="hscroll-sticky">
         <div class="hscroll-head container">
@@ -198,7 +190,6 @@
       </div>
     </section>
 
-    <!-- PROJECTS -->
     <section class="section projects" id="projects">
       <div class="container">
         <div class="section-head split-head">
@@ -214,7 +205,6 @@
       </div>
     </section>
 
-    <!-- DESIGN CONCEPTS -->
     <section class="section concepts" id="concepts">
       <div class="container">
         <div class="section-head">
@@ -225,7 +215,6 @@
       </div>
     </section>
 
-    <!-- PROCESS -->
     <section class="section process" id="process">
       <div class="container process-grid">
         <div class="process-head">
@@ -243,7 +232,6 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS (placeholder) -->
     <section class="section testimonials" id="testimonials">
       <div class="container">
         <div class="section-head center">
@@ -259,7 +247,6 @@
       </div>
     </section>
 
-    <!-- CONTACT -->
     <section class="section contact" id="contact">
       <div class="contact-bg" data-parallax="0.15"><img src="images/concepts/ground-floor-plan.jpg" alt="" loading="lazy"></div>
       <div class="container contact-grid">
@@ -289,6 +276,7 @@
         </form>
       </div>
     </section>
+
   </main>
 
   <footer class="footer">
@@ -307,7 +295,6 @@
     </div>
   </footer>
 
-  <!-- Project detail -->
   <div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-panel" tabindex="-1">
@@ -316,7 +303,6 @@
     </div>
   </div>
 
-  <!-- Lightbox -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
     <button class="lb-close" aria-label="Close">&times;</button>
     <button class="lb-prev" aria-label="Previous image">&#8249;</button>
@@ -330,3 +316,4 @@
   <script src="js/main.js" defer></script>
 </body>
 </html>
+

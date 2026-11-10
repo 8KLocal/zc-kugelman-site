@@ -1,11 +1,13 @@
 # Updating the ZC Kugelman Interiors website
 
+The live site uses the **Classic Brownstone** look: cream paper, a deep green header, burgundy accents, and traditional serif type (EB Garamond for text, Cinzel for small labels). Those fonts are loaded from Google Fonts in `index.html`. Other design directions are still available under `/options/` and are not used on the main site.
+
 Everything is plain HTML, CSS and JS. There is no build step. Edit a file, refresh, and you're done.
 
 ```
 zc-site/
   index.html            page layout and text
-  css/style.css         look and animations
+  css/style.css         Classic Brownstone look and animations
   js/config.js          BRAND NAME, phone, email, form, counters   <- edit me
   js/main.js            behavior (normally you don't touch this)
   data/projects.json    Past Projects (one entry per job)

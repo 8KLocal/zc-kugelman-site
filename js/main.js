@@ -1,4 +1,4 @@
-/* ZC Kugelman Interiors: site behavior (vanilla JS, no build step) */
+/* ZC Kugelman Interiors: site behavior (vanilla JS, no build step). Asset paths resolve via SITE_CONFIG.assetBase. */
 (function () {
   'use strict';
   window.__zcReady = true;
@@ -11,6 +11,29 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]; }); };
   var isTBD = function (v) { return !v || /^tbd$/i.test(String(v).trim()); };
+
+  /* Resolve data/ and image paths. At the site root this is empty; option pages may set SITE_CONFIG.assetBase. */
+  var ASSET_BASE = (function () {
+    var b = (typeof C.assetBase === 'string') ? C.assetBase : (window.__ASSET_BASE || '');
+    if (b && b.slice(-1) !== '/') b += '/';
+    return b;
+  })();
+  function asset(p) {
+    if (!p) return '';
+    var s = String(p);
+    if (/^(https?:|data:|mailto:|tel:|\/\/)/i.test(s)) return s;
+    if (s.indexOf(ASSET_BASE) === 0) return s;
+    if (s.indexOf('../') === 0) return s;
+    return ASSET_BASE + s.replace(/^\.\//, '');
+  }
+  function cleanDisplay(s) {
+    return String(s == null ? '' : s)
+      .replace(/\s*AI-?generated[^.]*(?:\.)?/gi, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\s+\./g, '.')
+      .trim();
+  }
+
 
   /* ---------- 1. Apply config (brand name lives in js/config.js) ---------- */
   function applyConfig() {
@@ -266,9 +289,9 @@
     return '<button class="card" data-slug="' + esc(p.slug) + '" data-cats="' + esc((p.categories || []).join('|')) + '" data-reveal aria-label="Open project: ' + esc(p.title) + '">' +
       '<div class="card-media">' + (p.sample ? '<span class="badge-sample">SAMPLE</span>' : '') +
       (p.plans && p.plans.length ? '<span class="badge-plan">Floor plan included</span>' : '') +
-      '<img src="' + esc(p.cover || (p.images && p.images[0] && p.images[0].src) || '') + '" alt="' + esc(p.title) + '" loading="lazy"></div>' +
+      '<img src="' + esc(asset(p.cover || (p.images && p.images[0] && p.images[0].src) || '')) + '" alt="' + esc(p.title) + '" loading="lazy"></div>' +
       '<div class="card-meta"><h3 class="card-title">' + esc(p.title) + '</h3><span class="card-sub">' + esc(p.neighborhood) + (p.year ? ' &middot; ' + esc(p.year) : '') + '</span></div>' +
-      (p.summary ? '<p class="card-sum">' + esc(p.summary) + '</p>' : '') + '</button>';
+      (p.summary ? '<p class="card-sum">' + esc(cleanDisplay(p.summary)) + '</p>' : '') + '</button>';
   }
   function renderProjects(list) {
     projects = list;
@@ -308,12 +331,20 @@
     var p = projects.filter(function (x) { return x.slug === slug; })[0];
     if (!p) return;
     modalReturn = from || document.activeElement;
-    var imgs = (p.images || []).map(function (im) { return typeof im === 'string' ? { src: im } : im; });
-    var plans = (p.plans || []).map(function (im) { return typeof im === 'string' ? { src: im } : im; });
+    var norm = function (im, plan) {
+      var o = typeof im === 'string' ? { src: im } : Object.assign({}, im);
+      o.src = asset(o.src);
+      if (o.caption) o.caption = cleanDisplay(o.caption);
+      if (o.alt) o.alt = cleanDisplay(o.alt);
+      if (plan) o.plan = true;
+      return o;
+    };
+    var imgs = (p.images || []).map(function (im) { return norm(im); });
+    var plans = (p.plans || []).map(function (im) { return norm(im, true); });
     var lbList = imgs.map(function (im) { return { src: im.src, alt: im.alt || p.title, caption: im.caption || p.title }; })
       .concat(plans.map(function (pl, i) { return { src: pl.src, alt: pl.alt || 'Floor plan', caption: 'Plan: ' + (pl.caption || pl.alt || 'Floor plan ' + (i + 1)), plan: true }; }));
     var k = 0;
-    var html = '<div class="pm-hero" data-lb="0"><img src="' + esc(p.cover || (imgs[0] && imgs[0].src)) + '" alt="' + esc(p.title) + '"></div>' +
+    var html = '<div class="pm-hero" data-lb="0"><img src="' + esc(asset(p.cover) || (imgs[0] && imgs[0].src) || '') + '" alt="' + esc(p.title) + '"></div>' +
       '<div class="pm-body">' +
       (p.sample ? '<p class="pm-sample pm-fade" style="--i:' + (k++) + '">SAMPLE ENTRY: placeholder project. Not a real client.</p>' : '') +
       '<p class="eyebrow pm-fade" style="--i:' + (k++) + '">Past Project</p>' +
@@ -323,7 +354,7 @@
       '<div><dt>Year</dt><dd>' + esc(p.year || '-') + '</dd></div>' +
       '<div><dt>Category</dt><dd>' + esc((p.categories || []).join(', ') || '-') + '</dd></div></dl>' +
       (p.scope && p.scope.length ? '<p class="eyebrow pm-fade" style="--i:' + (k++) + '">Scope</p><ul class="chips pm-fade" style="--i:' + (k++) + '">' + p.scope.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '') +
-      '<div class="pm-desc pm-fade" style="--i:' + (k++) + '">' + String(p.description || '').split(/\n{2,}/).map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>' +
+      '<div class="pm-desc pm-fade" style="--i:' + (k++) + '">' + String(cleanDisplay(p.description) || '').split(/\n{2,}/).map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>' +
       '<div class="pm-gallery">' + imgs.map(function (im, i) {
         return '<button class="pm-fade" style="--i:' + (k + i) + '" data-lb="' + i + '" aria-label="View photo ' + (i + 1) + '"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title) + '" loading="lazy"></button>';
       }).join('') + '</div>' +
@@ -363,11 +394,11 @@
   function renderConcepts(list) {
     var grid = $('#conceptsGrid');
     if (!list.length) { grid.innerHTML = '<p class="empty">Concepts coming soon.</p>'; return; }
-    var lbList = list.map(function (c) { return { src: c.src, alt: c.title, caption: c.title }; });
+    var lbList = list.map(function (c) { return { src: asset(c.src), alt: c.title, caption: c.title }; });
     grid.innerHTML = list.map(function (c, i) {
       return '<button class="concept" data-i="' + i + '" aria-label="View concept: ' + esc(c.title) + '">' +
-        '<div class="clip" data-reveal="clip"><img src="' + esc(c.src) + '" alt="' + esc(c.title) + '" loading="lazy"></div>' +
-        '<div class="concept-cap" data-reveal><h3>' + esc(c.title) + '</h3>' + (c.description ? '<p>' + esc(c.description) + '</p>' : '') + '</div></button>';
+        '<div class="clip" data-reveal="clip"><img src="' + esc(asset(c.src)) + '" alt="' + esc(c.title) + '" loading="lazy"></div>' +
+        '<div class="concept-cap" data-reveal><h3>' + esc(c.title) + '</h3>' + (c.description ? '<p>' + esc(cleanDisplay(c.description)) + '</p>' : '') + '</div></button>';
     }).join('');
     grid.addEventListener('click', function (e) {
       var b = e.target.closest('.concept'); if (b) lbOpen(lbList, Number(b.getAttribute('data-i')));
@@ -429,8 +460,8 @@
       initActiveLinks();
       initForm();
       Promise.all([
-        loadJSON('data/projects.json', 'projects').then(renderProjects).catch(function () { loadError('#projectsGrid', 'projects'); }),
-        loadJSON('data/concepts.json', 'concepts').then(renderConcepts).catch(function () { loadError('#conceptsGrid', 'concepts'); })
+        loadJSON(asset('data/projects.json'), 'projects').then(renderProjects).catch(function () { loadError('#projectsGrid', 'projects'); }),
+        loadJSON(asset('data/concepts.json'), 'concepts').then(renderConcepts).catch(function () { loadError('#conceptsGrid', 'concepts'); })
       ]).then(function () { measureHS(); requestUpdate(); routeFromHash(); });
       measureHS();
       window.addEventListener('scroll', requestUpdate, { passive: true });
