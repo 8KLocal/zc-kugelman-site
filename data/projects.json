@@ -1,5 +1,5 @@
 {
-  "_readme": "Past projects. Each entry = one job. Photos live in images/projects/<slug>/, floor plans / layout drawings (optional) in images/projects/<slug>/plans/. Entries with \"sample\": true are SAMPLE placeholders (AI images or illustrative plans, not real clients). Delete them once real jobs are added. See UPDATING.md.",
+  "_readme": "Past projects. Each entry = one job. Photos live in images/projects/<slug>/, floor plans / layout drawings (optional) in images/projects/<slug>/plans/. Entries with \"sample\": true are SAMPLE placeholders (illustrative plans and images, not real clients). Delete them once real jobs are added. See UPDATING.md.",
   "projects": [
     {
       "slug": "sample-park-slope-kosher-kitchen",
@@ -10,14 +10,14 @@
       "categories": ["Kitchens", "Dining"],
       "scope": ["Kitchen layout", "Meat & dairy zoning", "Dining room sizing", "Furniture plan"],
       "summary": "A placeholder showing how a kitchen layout project will appear.",
-      "description": "SAMPLE ENTRY, not a real client. Images and the plan sketch are AI-generated placeholders. A real project would explain the layout problem and the solution, for example how the kitchen was re-planned into separate meat and dairy work zones with their own sinks and counters, and how the wall to the dining room moved so the table could extend for Yom Tov with a clear walkway behind the chairs.",
+      "description": "SAMPLE ENTRY, not a real client. Images and the plan sketch are placeholders. A real project would explain the layout problem and the solution, for example how the kitchen was re-planned into separate meat and dairy work zones with their own sinks and counters, and how the wall to the dining room moved so the table could extend for Yom Tov with a clear walkway behind the chairs.",
       "cover": "images/projects/sample-park-slope-kosher-kitchen/01.jpg",
       "images": [
         { "src": "images/projects/sample-park-slope-kosher-kitchen/01.jpg", "alt": "Kosher kitchen with navy meat zone and cream dairy zone", "caption": "Meat zone in navy, dairy zone in cream (sample image)" },
         { "src": "images/projects/sample-park-slope-kosher-kitchen/02.jpg", "alt": "Long dining room table set for guests", "caption": "Dining room planned for Yom Tov (sample image)" }
       ],
       "plans": [
-        { "src": "images/projects/sample-park-slope-kosher-kitchen/plans/plan-01.jpg", "alt": "Hand-drawn kitchen and dining layout sketch", "caption": "Layout sketch: kitchen zones and dining table (AI-generated sample)" }
+        { "src": "images/projects/sample-park-slope-kosher-kitchen/plans/plan-01.jpg", "alt": "Hand-drawn kitchen and dining layout sketch", "caption": "Layout sketch: kitchen zones and dining table (sample)" }
       ]
     },
     {
@@ -29,7 +29,7 @@
       "categories": ["Full Home", "Bedrooms", "Living"],
       "scope": ["Whole-home space plan", "Room sizing", "Bedrooms for a big family", "Seforim wall"],
       "summary": "A placeholder showing a whole-house layout project.",
-      "description": "SAMPLE ENTRY, not a real client. Images and the floor plan are AI-generated placeholders. A whole-home project would walk through the plan: how the entry and stair were arranged, how the living room was sized around a seforim library, and how the upstairs was re-divided so a growing family gets shared kids' rooms with built-in bunks and real closets.",
+      "description": "SAMPLE ENTRY, not a real client. Images and the floor plan are placeholders. A whole-home project would walk through the plan: how the entry and stair were arranged, how the living room was sized around a seforim library, and how the upstairs was re-divided so a growing family gets shared kids' rooms with built-in bunks and real closets.",
       "cover": "images/projects/sample-flatbush-family-home/02.jpg",
       "images": [
         { "src": "images/projects/sample-flatbush-family-home/01.jpg", "alt": "Brownstone foyer with curved staircase", "caption": "Entry and stair (sample image)" },
@@ -38,7 +38,7 @@
         { "src": "images/projects/sample-flatbush-family-home/04.jpg", "alt": "Kids room with sage built-in bunk beds", "caption": "Shared kids' room (sample image)" }
       ],
       "plans": [
-        { "src": "images/projects/sample-flatbush-family-home/plans/plan-01.jpg", "alt": "Ground floor plan drawing", "caption": "Ground floor plan (AI-generated sample)" }
+        { "src": "images/projects/sample-flatbush-family-home/plans/plan-01.jpg", "alt": "Ground floor plan drawing", "caption": "Ground floor plan (sample)" }
       ]
     },
     {
@@ -50,7 +50,7 @@
       "categories": ["Full Home", "Outdoor", "Dining"],
       "scope": ["Ground-floor layout", "Kitchen-to-sukkah flow", "Pesach pantry", "Dining for 14-20"],
       "summary": "A placeholder showing an illustrative measured floor plan.",
-      "description": "SAMPLE ENTRY, not a real client. The photos are AI-generated and the floor plan is an illustrative example. A project like this would explain the planning decisions: a sukkah deck placed right off the kitchen, a dining room sized for a table that seats 14 and extends to 20, a Pesach pantry next to the dining room, and a study with a full seforim wall.",
+      "description": "SAMPLE ENTRY, not a real client. The photos and the floor plan are illustrative examples. A project like this would explain the planning decisions: a sukkah deck placed right off the kitchen, a dining room sized for a table that seats 14 and extends to 20, a Pesach pantry next to the dining room, and a study with a full seforim wall.",
       "cover": "images/projects/sample-midwood-sukkah-porch/01.jpg",
       "images": [
         { "src": "images/projects/sample-midwood-sukkah-porch/01.jpg", "alt": "Covered porch with louvered roof and long table", "caption": "Deck that converts to a sukkah (sample image)" },

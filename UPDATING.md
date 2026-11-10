@@ -9,11 +9,11 @@ zc-site/
   js/config.js          BRAND NAME, phone, email, form, counters   <- edit me
   js/main.js            behavior (normally you don't touch this)
   data/projects.json    Past Projects (one entry per job)
-  data/concepts.json    AI Concepts gallery
+  data/concepts.json    Design Concepts gallery
   images/hero/          hero image
   images/projects/<slug>/         photos for each job
   images/projects/<slug>/plans/   floor plans / layout drawings for that job (optional)
-  images/concepts/      AI concept renderings
+  images/concepts/      concept renderings
   scripts/add_project.py    adds a job from a folder of photos
 ```
 
@@ -83,12 +83,12 @@ To show a real plan there later, replace the SVG with your own following the sam
 Once you have real jobs, run `python3 scripts/add_project.py --remove-samples`
 (or delete the entries with `"sample": true` and their image folders).
 
-## Add an AI concept image
+## Add a concept image
 Put the image in `images/concepts/` and add an entry to `data/concepts.json`:
 ```json
 { "src": "images/concepts/new-idea.jpg", "title": "Pesach Kitchen Concept", "room": "Kitchen", "description": "Short caption." }
 ```
-Every item in this gallery is automatically labeled "AI concept". Only put AI renderings here. Real photos belong in Projects.
+This gallery is for concept renderings and layout ideas. Real project photos belong in Projects.
 
 ## Publish
 Upload the whole `zc-site` folder to Netlify (drag and drop), GitHub Pages, Cloudflare Pages or any web host.

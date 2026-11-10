@@ -1,17 +1,17 @@
 {
-  "_readme": "AI-generated concept renderings, NOT photos of completed work. Images live in images/concepts/. See UPDATING.md.",
+  "_readme": "Concept renderings and layout ideas, not photos of completed work. Images live in images/concepts/. See UPDATING.md.",
   "concepts": [
     {
       "src": "images/concepts/ground-floor-plan.jpg",
       "title": "Ground Floor Plan Study",
       "room": "Floor Plan",
-      "description": "A hand-drafted style layout: kitchen with island, a long dining table, living room and stair. AI-generated, not a real plan."
+      "description": "A hand-drafted style layout: kitchen with island, a long dining table, living room and stair."
     },
     {
       "src": "images/concepts/layout-sketch.jpg",
       "title": "Kitchen & Dining Layout Sketch",
       "room": "Floor Plan",
-      "description": "A tracing-paper sketch testing the island, counters and table placement. AI-generated."
+      "description": "A tracing-paper sketch testing the island, counters and table placement."
     },
     {
       "src": "images/concepts/shabbos-dining.jpg",

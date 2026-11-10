@@ -315,7 +315,7 @@
     var k = 0;
     var html = '<div class="pm-hero" data-lb="0"><img src="' + esc(p.cover || (imgs[0] && imgs[0].src)) + '" alt="' + esc(p.title) + '"></div>' +
       '<div class="pm-body">' +
-      (p.sample ? '<p class="pm-sample pm-fade" style="--i:' + (k++) + '">SAMPLE ENTRY: placeholder project with AI-generated images. Not a real client.</p>' : '') +
+      (p.sample ? '<p class="pm-sample pm-fade" style="--i:' + (k++) + '">SAMPLE ENTRY: placeholder project. Not a real client.</p>' : '') +
       '<p class="eyebrow pm-fade" style="--i:' + (k++) + '">Past Project</p>' +
       '<h2 id="pmTitle" class="pm-fade" style="--i:' + (k++) + '">' + esc(p.title) + '</h2>' +
       '<dl class="pm-meta pm-fade" style="--i:' + (k++) + '">' +
@@ -328,7 +328,7 @@
         return '<button class="pm-fade" style="--i:' + (k + i) + '" data-lb="' + i + '" aria-label="View photo ' + (i + 1) + '"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title) + '" loading="lazy"></button>';
       }).join('') + '</div>' +
       (plans.length ? '<h3 class="pm-sub pm-fade" style="--i:' + (k + imgs.length) + '">Floor plans &amp; layouts</h3>' +
-        (p.sample ? '<p class="pm-subnote">Sample plans: AI-generated or illustrative, not real client drawings.</p>' : '') +
+        (p.sample ? '<p class="pm-subnote">Sample plans: illustrative, not real client drawings.</p>' : '') +
         '<div class="pm-plans">' + plans.map(function (pl, i) {
           return '<figure class="pm-fade" style="--i:' + (k + imgs.length + 1 + i) + '"><button data-lb="' + (imgs.length + i) + '" aria-label="View plan ' + (i + 1) + '"><img src="' + esc(pl.src) + '" alt="' + esc(pl.alt || 'Floor plan') + '" loading="lazy"></button>' +
             (pl.caption ? '<figcaption>' + esc(pl.caption) + '</figcaption>' : '') + '</figure>';
@@ -359,15 +359,14 @@
   }
   window.addEventListener('popstate', routeFromHash);
 
-  /* ---------- 9. AI concepts (data/concepts.json) ---------- */
+  /* ---------- 9. Design concepts (data/concepts.json) ---------- */
   function renderConcepts(list) {
     var grid = $('#conceptsGrid');
     if (!list.length) { grid.innerHTML = '<p class="empty">Concepts coming soon.</p>'; return; }
-    var lbList = list.map(function (c) { return { src: c.src, alt: c.title, caption: c.title + ' (AI-generated concept rendering)' }; });
+    var lbList = list.map(function (c) { return { src: c.src, alt: c.title, caption: c.title }; });
     grid.innerHTML = list.map(function (c, i) {
-      return '<button class="concept" data-i="' + i + '" aria-label="View AI concept: ' + esc(c.title) + '">' +
-        '<div class="clip" data-reveal="clip"><img src="' + esc(c.src) + '" alt="AI-generated concept rendering: ' + esc(c.title) + '" loading="lazy"></div>' +
-        '<span class="tag-ai">AI concept</span>' +
+      return '<button class="concept" data-i="' + i + '" aria-label="View concept: ' + esc(c.title) + '">' +
+        '<div class="clip" data-reveal="clip"><img src="' + esc(c.src) + '" alt="' + esc(c.title) + '" loading="lazy"></div>' +
         '<div class="concept-cap" data-reveal><h3>' + esc(c.title) + '</h3>' + (c.description ? '<p>' + esc(c.description) + '</p>' : '') + '</div></button>';
     }).join('');
     grid.addEventListener('click', function (e) {
