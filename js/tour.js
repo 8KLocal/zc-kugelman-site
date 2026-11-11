@@ -4,12 +4,12 @@ const THREE_VERSION = '0.170.0';
 let THREE;
 
 const VIEWS = {
-  home:    { pos: [20, 36, 40], target: [20, 0.4, 12] },
-  kitchen: { pos: [8.2, 14.5, 11.2], target: [7, 1.2, 6.2] },
-  dining:  { pos: [24, 14.5, 12.2], target: [24, 1.2, 6.4] },
-  living:  { pos: [9, 13, 40], target: [9, 0.8, 21] },
-  study:   { pos: [34, 13, 40], target: [34, 0.8, 21] },
-  plan:    { pos: [20, 48, 14], target: [20, 0, 12] }
+  home:    { pos: [28, 38, 46], target: [20, 0.4, 12] },
+  kitchen: { pos: [16, 20, 22], target: [7, 1.0, 6.5] },
+  dining:  { pos: [30, 20, 22], target: [24, 1.0, 6.5] },
+  living:  { pos: [18, 22, 42], target: [9, 0.8, 21] },
+  study:   { pos: [28, 22, 42], target: [34, 0.8, 21] },
+  plan:    { pos: [20, 54, 14.2], target: [20, 0, 14] }
 };
 
 function hasWebGL() {
@@ -282,15 +282,65 @@ function buildScene(THREE) {
   floorLabel('ENTRY', 23, 18.8, 3.6);
   floorLabel('STUDY', 34, 18.8, 3.8);
 
+  const fadeGroups = {};
+  function tagExterior(mesh, id) {
+    if (!mesh || !id) return mesh;
+    let g = fadeGroups[id];
+    if (!g) {
+      const inward = { north: [0, 0, 1], south: [0, 0, -1], west: [1, 0, 0], east: [-1, 0, 0] }[id];
+      const point = { north: [20, 1, 0], south: [20, 1, 28], west: [0, 1, 14], east: [40, 1, 14] }[id];
+      g = fadeGroups[id] = { inward: inward, point: point, meshes: [] };
+    }
+    const src = mesh.material;
+    if (src && !(src.userData && src.userData._fadeMat)) {
+      const n = src.clone();
+      n.transparent = true;
+      n.userData = n.userData || {};
+      n.userData._fadeMat = true;
+      mesh.material = n;
+    }
+    g.meshes.push(mesh);
+    return mesh;
+  }
+  function exteriorIdX(z) {
+    if (Math.abs(z - 0) < 0.4) return 'north';
+    if (Math.abs(z - 28) < 0.4) return 'south';
+    return null;
+  }
+  function exteriorIdZ(x) {
+    if (Math.abs(x - 0) < 0.4) return 'west';
+    if (Math.abs(x - 40) < 0.4) return 'east';
+    return null;
+  }
+  function updateCutaways(cam) {
+    if (!cam) return;
+    Object.keys(fadeGroups).forEach(function (id) {
+      const g = fadeGroups[id];
+      const side = (cam.position.x - g.point[0]) * g.inward[0] + (cam.position.z - g.point[2]) * g.inward[2];
+      const hide = side < -0.8;
+      g.meshes.forEach(function (mesh) {
+        mesh.visible = !hide;
+        if (mesh.castShadow !== undefined) mesh.castShadow = !hide;
+      });
+    });
+  }
   function wallX(x0, x1, z, h, y0) {
     const len = Math.abs(x1 - x0);
     if (len < 0.05) return;
-    addBox(len, h, T, mats.wall, (x0 + x1) / 2, (y0 || 0) + h / 2, z);
+    const yBase = (y0 || 0);
+    const m = addBox(len, h, T, mats.wall, (x0 + x1) / 2, yBase + h / 2, z);
+    const cap = addBox(len + 0.04, 0.08, T + 0.08, mats.base, (x0 + x1) / 2, yBase + h + 0.04, z);
+    const id = exteriorIdX(z);
+    if (id) { tagExterior(m, id); tagExterior(cap, id); }
   }
   function wallZ(z0, z1, x, h, y0) {
     const len = Math.abs(z1 - z0);
     if (len < 0.05) return;
-    addBox(T, h, len, mats.wall, x, (y0 || 0) + h / 2, (z0 + z1) / 2);
+    const yBase = (y0 || 0);
+    const m = addBox(T, h, len, mats.wall, x, yBase + h / 2, (z0 + z1) / 2);
+    const cap = addBox(T + 0.08, 0.08, len + 0.04, mats.base, x, yBase + h + 0.04, (z0 + z1) / 2);
+    const id = exteriorIdZ(x);
+    if (id) { tagExterior(m, id); tagExterior(cap, id); }
   }
   function lintelX(x0, x1, z, wallH) { wallX(x0, x1, z, 1.15, wallH - 1.15); }
   function lintelZ(z0, z1, x, wallH) { wallZ(z0, z1, x, 1.15, wallH - 1.15); }
@@ -350,13 +400,18 @@ function buildScene(THREE) {
   baseZ(27.1, 27.7, 27.78);
 
   function windowPane(x, y, z, w, h, alongZ) {
+    const made = [];
     const glass = addBox(alongZ ? 0.05 : w, h, alongZ ? w : 0.05, mats.glass, x, y, z);
     glass.castShadow = false;
+    made.push(glass);
     // outer frame
-    addBox(alongZ ? 0.1 : w + 0.22, h + 0.22, alongZ ? w + 0.22 : 0.1, mats.walnut, x, y, z).castShadow = false;
+    made.push(addBox(alongZ ? 0.1 : w + 0.22, h + 0.22, alongZ ? w + 0.22 : 0.1, mats.walnut, x, y, z));
+    made[made.length - 1].castShadow = false;
     // mullions
-    addBox(alongZ ? 0.08 : 0.06, h, alongZ ? 0.06 : w, mats.walnut, x, y, z).castShadow = false;
-    addBox(alongZ ? 0.08 : w, 0.06, alongZ ? w : 0.08, mats.walnut, x, y, z).castShadow = false;
+    made.push(addBox(alongZ ? 0.08 : 0.06, h, alongZ ? 0.06 : w, mats.walnut, x, y, z));
+    made[made.length - 1].castShadow = false;
+    made.push(addBox(alongZ ? 0.08 : w, 0.06, alongZ ? w : 0.08, mats.walnut, x, y, z));
+    made[made.length - 1].castShadow = false;
     // daylight just outside
     const glow = new THREE.Mesh(
       new THREE.PlaneGeometry(alongZ ? h : w * 0.92, alongZ ? w * 0.92 : h),
@@ -371,6 +426,13 @@ function buildScene(THREE) {
     glow.castShadow = false;
     glow.receiveShadow = false;
     house.add(glow);
+    made.push(glow);
+    let wid = null;
+    if (alongZ && x < 5) wid = 'west';
+    else if (alongZ && x > 35) wid = 'east';
+    else if (!alongZ && z < 5) wid = 'north';
+    else if (!alongZ && z > 23) wid = 'south';
+    if (wid) made.forEach(function (mesh) { tagExterior(mesh, wid); });
     const pl = new THREE.PointLight(0xfff3d6, 0.32, 11, 2);
     pl.position.set(
       alongZ ? x + (x < 20 ? 1.2 : -1.2) : x,
@@ -419,7 +481,8 @@ function buildScene(THREE) {
   barHandle(2.12, 2.35, 7.3, true, false);
   // Hood over meat range
   addBox(2.05, 0.32, 2.35, mats.cream, 1.15, 5.15, 7.3);
-  addBox(1.15, 2.2, 1.25, mats.creamDark, 0.85, 6.4, 7.3);
+  addBox(1.15, 1.15, 1.25, mats.creamDark, 0.85, 5.9, 7.3);
+  addBox(1.3, 0.08, 1.4, mats.cream, 0.85, 6.52, 7.3);
   // Meat uppers
   addBox(1.15, 2.8, 1.6, mats.cream, 0.72, 5.9, 2.5);
   shakerFace(1.32, 5.9, 2.5, 1.45, 2.5, 'x', 1, false);
@@ -443,7 +506,8 @@ function buildScene(THREE) {
   addBox(0.08, 1.4, 1.5, mats.black, 12.35, 1.5, 2.08);
   barHandle(12.35, 2.35, 2.16, true, true);
   addBox(2.35, 0.32, 2.05, mats.cream, 12.35, 5.15, 1.15);
-  addBox(1.25, 2.2, 1.15, mats.creamDark, 12.35, 6.4, 0.85);
+  addBox(1.25, 1.15, 1.15, mats.creamDark, 12.35, 5.9, 0.85);
+  addBox(1.4, 0.08, 1.3, mats.cream, 12.35, 6.52, 0.85);
   addBox(1.5, 2.8, 1.15, mats.cream, 7.9, 5.9, 0.72);
   shakerFace(7.9, 5.9, 1.32, 1.35, 2.5, 'z', 1, false);
   addBox(1.4, 2.8, 1.15, mats.cream, 13.9, 5.9, 0.72);
@@ -490,9 +554,13 @@ function buildScene(THREE) {
   burners(12.35, 3.18, 1.28, 0);
 
   function pendant(x, z, yBottom) {
-    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 8 - yBottom, 8), mats.metal);
-    rod.position.set(x, (8 + yBottom) / 2, z);
+    const rodH = H - 0.04 - yBottom;
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, rodH, 8), mats.metal);
+    rod.position.set(x, yBottom + rodH / 2, z);
     house.add(rod);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.05, 12), mats.metal);
+    cap.position.set(x, H - 0.02, z);
+    house.add(cap);
     const shade = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.42, 0.38, 14, 1, true), mats.shade);
     shade.position.set(x, yBottom, z);
     shade.castShadow = false;
@@ -669,10 +737,10 @@ function buildScene(THREE) {
   addBox(1.2, 1.5, 1.6, mats.cream, 38.6, 0.75, 11.4);
 
   /* ---------- Lighting ---------- */
-  const hemi = new THREE.HemisphereLight(0xfff6e8, 0x6a5a44, 0.82);
+  const hemi = new THREE.HemisphereLight(0xfff6e8, 0x6a5a44, 0.78);
   scene.add(hemi);
-  const sun = new THREE.DirectionalLight(0xfff0d6, 1.38);
-  sun.position.set(18, 26, 22);
+  const sun = new THREE.DirectionalLight(0xfff0d6, 1.22);
+  sun.position.set(22, 32, 28);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1536, 1536);
   sun.shadow.camera.left = -8;
@@ -691,7 +759,7 @@ function buildScene(THREE) {
   warm.position.set(20, 7, 12);
   scene.add(warm);
 
-  return { scene, sun };
+  return { scene, sun, updateCutaways };
 }
 
 function easeInOut(t) {
@@ -716,9 +784,9 @@ async function startTour(rootEls, THREELib, OrbitControls) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 1.02;
 
-  const { scene, sun } = buildScene(THREE);
+  const { scene, sun, updateCutaways } = buildScene(THREE);
   if (mobile) sun.shadow.mapSize.set(1024, 1024);
 
   function isPortrait() { return stage.clientHeight > stage.clientWidth * 1.05; }
@@ -740,7 +808,7 @@ async function startTour(rootEls, THREELib, OrbitControls) {
   controls.dampingFactor = 0.08;
   controls.minDistance = 7;
   controls.maxDistance = 78;
-  controls.minPolarAngle = 0.06;
+  controls.minPolarAngle = 0.05;
   controls.maxPolarAngle = Math.PI / 2 - 0.06;
   controls.enablePan = !mobile;
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
@@ -818,6 +886,7 @@ async function startTour(rootEls, THREELib, OrbitControls) {
       if (p >= 1) anim = null;
     }
     controls.update();
+    if (updateCutaways) updateCutaways(camera);
     renderer.render(scene, camera);
   }
   raf = requestAnimationFrame(function (t) {
@@ -840,6 +909,20 @@ async function startTour(rootEls, THREELib, OrbitControls) {
       visible = r.bottom > 0 && r.top < window.innerHeight;
     }
   });
+
+  window.ZCTour = {
+    goTo: goTo,
+    pose: function (cx, cy, cz, tx, ty, tz) {
+      if (anim) anim = null;
+      camera.position.set(cx, cy, cz);
+      controls.target.set(tx, ty, tz);
+      controls.update();
+      if (updateCutaways) updateCutaways(camera);
+      renderer.render(scene, camera);
+    },
+    views: VIEWS,
+    ready: function () { return !!(stage && stage.classList.contains('is-ready')); }
+  };
 }
 
 function init() {

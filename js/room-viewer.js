@@ -377,6 +377,10 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     m.castShadow = true;
     m.receiveShadow = true;
     (parent || scene).add(m);
+    if (currentWallTag && fadeGroups[currentWallTag]) {
+      const g = fadeGroups[currentWallTag];
+      tagWall(m, currentWallTag, g.point[0] * 2, g.point[2] * 2);
+    }
     return m;
   }
   function addBox(w, h, d, mat, x, y, z, parent) {
@@ -399,56 +403,95 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     return mesh(new THREE.SphereGeometry(r, segs || 16, segs || 12), mat, x, y, z, parent);
   }
 
+  const fadeGroups = {};
+  let currentWallTag = null;
+
+  function tagWall(mesh, wallId, W, D) {
+    if (!mesh || !wallId) return mesh;
+    let g = fadeGroups[wallId];
+    if (!g) {
+      const inward = { back: [0, 0, 1], left: [1, 0, 0], right: [-1, 0, 0], front: [0, 0, -1] }[wallId];
+      const point = { back: [W / 2, 1, 0], left: [0, 1, D / 2], right: [W, 1, D / 2], front: [W / 2, 1, D] }[wallId];
+      g = fadeGroups[wallId] = { id: wallId, inward: inward, point: point, meshes: [] };
+    }
+    mesh.userData._fadeVisible = true;
+    g.meshes.push(mesh);
+    return mesh;
+  }
+
+  function updateCutaways(cam) {
+    if (!cam) return;
+    Object.keys(fadeGroups).forEach(function (id) {
+      const g = fadeGroups[id];
+      const side = (cam.position.x - g.point[0]) * g.inward[0] + (cam.position.z - g.point[2]) * g.inward[2];
+      // Hide a wall only when the camera is clearly on its outside, so a 3/4
+      // view is not blocked. Top-down (camera inside the footprint) keeps all walls.
+      const hide = side < -0.7;
+      g.meshes.forEach(function (mesh) {
+        mesh.visible = !hide;
+        if (mesh.castShadow !== undefined) mesh.castShadow = !hide;
+      });
+    });
+  }
+
   function shell(W, D, H, opts) {
     opts = opts || {};
     const wall = 0.28;
     const floorMat = opts.floor || mats.herring;
-    const ceilMat = opts.ceiling || mats.white;
     const wallMat = opts.wall || mats.plaster;
     addBox(W + wall * 2, 0.12, D + wall * 2, floorMat, W / 2, -0.06, D / 2);
-    addBox(W + wall * 2, 0.1, D + wall * 2, ceilMat, W / 2, H + 0.05, D / 2);
-    // back wall always solid unless a framed opening is cut by the builder
-    addBox(W + wall * 2, H, wall, wallMat, W / 2, H / 2, -wall / 2);
-    addBox(wall, H, D, wallMat, -wall / 2, H / 2, D / 2);
-    addBox(wall, H, D, wallMat, W + wall / 2, H / 2, D / 2);
-    if (!opts.noFront) addBox(W + wall * 2, H, wall, wallMat, W / 2, H / 2, D + wall / 2);
-    // baseboards
+    // No ceiling / roof. Walls end at H with a clean cap.
+    function wallPlane(id, w, h, d, x, y, z) {
+      currentWallTag = null;
+      const m = addBox(w, h, d, wallMat, x, y, z);
+      tagWall(m, id, W, D);
+      return m;
+    }
+    function cap(id, w, d, x, z) {
+      const m = addBox(w, 0.08, d, mats.trim, x, H + 0.04, z);
+      tagWall(m, id, W, D);
+      return m;
+    }
+    wallPlane('back', W + wall * 2, H, wall, W / 2, H / 2, -wall / 2);
+    cap('back', W + wall * 2 + 0.06, wall + 0.08, W / 2, -wall / 2);
+    wallPlane('left', wall, H, D, -wall / 2, H / 2, D / 2);
+    cap('left', wall + 0.08, D + 0.06, -wall / 2, D / 2);
+    wallPlane('right', wall, H, D, W + wall / 2, H / 2, D / 2);
+    cap('right', wall + 0.08, D + 0.06, W + wall / 2, D / 2);
+    if (!opts.noFront) {
+      wallPlane('front', W + wall * 2, H, wall, W / 2, H / 2, D + wall / 2);
+      cap('front', W + wall * 2 + 0.06, wall + 0.08, W / 2, D + wall / 2);
+    }
     const bh = 0.38, bt = 0.06;
-    addBox(W, bh, bt, mats.trim, W / 2, bh / 2, bt / 2 + 0.01);
-    addBox(bt, bh, D, mats.trim, bt / 2 + 0.01, bh / 2, D / 2);
-    addBox(bt, bh, D, mats.trim, W - bt / 2 - 0.01, bh / 2, D / 2);
-    if (!opts.noFront) addBox(W, bh, bt, mats.trim, W / 2, bh / 2, D - bt / 2 - 0.01);
-    // crown
-    const ch = 0.16, ct = 0.1;
-    addBox(W, ch, ct, mats.trim, W / 2, H - ch / 2, ct / 2 + 0.01);
-    addBox(ct, ch, D, mats.trim, ct / 2 + 0.01, H - ch / 2, D / 2);
-    addBox(ct, ch, D, mats.trim, W - ct / 2 - 0.01, H - ch / 2, D / 2);
-    if (!opts.noFront) addBox(W, ch, ct, mats.trim, W / 2, H - ch / 2, D - ct / 2 - 0.01);
+    tagWall(addBox(W, bh, bt, mats.trim, W / 2, bh / 2, bt / 2 + 0.01), 'back', W, D);
+    tagWall(addBox(bt, bh, D, mats.trim, bt / 2 + 0.01, bh / 2, D / 2), 'left', W, D);
+    tagWall(addBox(bt, bh, D, mats.trim, W - bt / 2 - 0.01, bh / 2, D / 2), 'right', W, D);
+    if (!opts.noFront) tagWall(addBox(W, bh, bt, mats.trim, W / 2, bh / 2, D - bt / 2 - 0.01), 'front', W, D);
     return { W, D, H, wall };
   }
 
   function lights(W, D, H, sunPos) {
-    const hemi = new THREE.HemisphereLight(0xfff6e8, 0x8a7a62, 1.02);
+    const hemi = new THREE.HemisphereLight(0xfff6e8, 0x8a7a62, 0.92);
     scene.add(hemi);
-    const sun = new THREE.DirectionalLight(0xfff3d6, 0.82);
-    const sp = sunPos || [W * 0.35, H + 6, D + 5];
+    const sun = new THREE.DirectionalLight(0xfff3d6, 1.05);
+    const sp = sunPos || [W * 0.4, H + 14, D + 8];
     sun.position.set(sp[0], sp[1], sp[2]);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
     sun.shadow.bias = -0.0007;
     sun.shadow.normalBias = 0.035;
     sun.shadow.camera.near = 0.5;
-    sun.shadow.camera.far = 50;
-    sun.shadow.camera.left = -W;
-    sun.shadow.camera.right = W;
-    sun.shadow.camera.top = Math.max(H, D);
-    sun.shadow.camera.bottom = -Math.max(H, D);
+    sun.shadow.camera.far = 60;
+    sun.shadow.camera.left = -W * 1.2;
+    sun.shadow.camera.right = W * 1.2;
+    sun.shadow.camera.top = Math.max(H, D) * 1.2;
+    sun.shadow.camera.bottom = -Math.max(H, D) * 1.2;
     scene.add(sun);
-    const fill = new THREE.DirectionalLight(0xe8f0ff, 0.38);
-    fill.position.set(W * 0.8, H * 0.7, D + 3);
+    const fill = new THREE.DirectionalLight(0xe8f0ff, 0.28);
+    fill.position.set(W * 0.15, H + 8, -4);
     scene.add(fill);
-    const bounce = new THREE.DirectionalLight(0xffe8c8, 0.18);
-    bounce.position.set(W * 0.2, 1.2, D * 0.3);
+    const bounce = new THREE.DirectionalLight(0xffe8c8, 0.16);
+    bounce.position.set(W * 0.5, 2.0, D + 2);
     scene.add(bounce);
     return sun;
   }
@@ -456,6 +499,7 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
   /* Window on a wall. Glow sits OUTSIDE so it reads as daylight, not a billboard. */
   function addWindow(wall, pos, width, sill, height, W, D, H, opts) {
     opts = opts || {};
+    currentWallTag = wall;
     const frameT = 0.08, frameD = 0.12;
     const mullion = opts.mullion !== false;
     let fx, fy, fz, sx, sy, sz, gx, gy, gz, glowPos, glowSize, rotY = 0;
@@ -508,10 +552,13 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     if (opts.curtains) {
       addCurtains(wall, pos, width, sill, height, W, D, H, opts.curtainMat || mats.curtainCream);
     }
+    currentWallTag = null;
     return { fx, fy, fz };
   }
 
   function addCurtains(wall, pos, width, sill, height, W, D, H, mat) {
+    const prevTag = currentWallTag;
+    currentWallTag = wall;
     // Rod and two panels, flush to the wall — never floating in the room.
     const drop = H - 0.45 - 0.15;
     const panelW = Math.max(0.85, width * 0.42);
@@ -540,6 +587,7 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
       addBox(thick, drop, panelW, mat, W - 0.2, y, pos - width / 2 - panelW * 0.15);
       addBox(thick, drop, panelW, mat, W - 0.2, y, pos + width / 2 + panelW * 0.15);
     }
+      currentWallTag = prevTag;
   }
 
   function addCabinetRun(x0, x1, z0, z1, y0, y1, facing, upper) {
@@ -675,35 +723,52 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
       addCyl(0.03, 0.03, 1.3, 10, mats.brass, cx, 2.05, od[2] + (face === '+z' ? 0.06 : -0.06), 0, Math.PI / 2);
       for (let i = -2; i <= 2; i++) addCyl(0.05, 0.05, 0.06, 10, mats.brass, cx + i * 0.4, 2.85, od[2] + (face === '+z' ? 0.05 : -0.05), Math.PI / 2, 0);
     }
-    // hood centered over the range, chimney to the ceiling
-    const hoodY = 6.55, hoodH = 0.7;
+    // hood centered over the range; short capped chimney (no run to a missing ceiling)
+    const hoodY = 6.55, hoodH = 0.7, chimH = 1.05;
     const hoodW = w + 0.35, hoodD = d - 0.15;
     if (face === '+x' || face === '-x') {
       const hx = cx + (face === '+x' ? 0.15 : -0.15);
       addRound(hoodD + 0.2, 0.12, hoodW, mats.chrome, hx, hoodY, cz, 0.04);
-      // canopy sides sloping — approximate with a second box
       addRound(hoodD, hoodH, hoodW - 0.2, mats.chrome, hx, hoodY + hoodH / 2 + 0.04, cz, 0.03);
-      addBox(0.7, H - (hoodY + hoodH) - 0.05, 0.9, mats.chrome, hx, (hoodY + hoodH + H) / 2, cz);
+      addBox(0.7, chimH, 0.9, mats.chrome, hx, hoodY + hoodH + chimH / 2 + 0.04, cz);
+      addBox(0.82, 0.07, 1.02, mats.chrome, hx, hoodY + hoodH + chimH + 0.1, cz);
     } else {
       addRound(hoodW, 0.12, hoodD + 0.2, mats.chrome, cx, hoodY, cz, 0.04);
       addRound(hoodW - 0.2, hoodH, hoodD, mats.chrome, cx, hoodY + hoodH / 2 + 0.04, cz, 0.03);
-      addBox(0.9, H - (hoodY + hoodH) - 0.05, 0.7, mats.chrome, cx, (hoodY + hoodH + H) / 2, cz);
+      addBox(0.9, chimH, 0.7, mats.chrome, cx, hoodY + hoodH + chimH / 2 + 0.04, cz);
+      addBox(1.02, 0.07, 0.82, mats.chrome, cx, hoodY + hoodH + chimH + 0.1, cz);
     }
   }
 
-  function addPendant(x, y, z) {
-    addCyl(0.012, 0.012, 1.5, 8, mats.brass, x, y + 0.9, z);
+  function addBeamX(x0, x1, y, z, mat) {
+    const m = mat || mats.brass;
+    const len = Math.abs(x1 - x0);
+    addBox(len, 0.07, 0.07, m, (x0 + x1) / 2, y, z);
+  }
+  function addCanopy(x, y, z, mat) {
+    // Finished cap at the open wall-top line so hanging fixtures don't float
+    addCyl(0.22, 0.22, 0.06, 16, mat || mats.brass, x, y, z);
+    addCyl(0.08, 0.08, 0.05, 12, mat || mats.brass, x, y - 0.05, z);
+  }
+  function addPendant(x, y, z, hangY) {
+    hangY = hangY == null ? y + 1.55 : hangY;
+    const rodH = Math.max(0.2, hangY - y - 0.14);
+    addCyl(0.012, 0.012, rodH, 8, mats.brass, x, y + 0.14 + rodH / 2, z);
     addCyl(0.04, 0.04, 0.08, 12, mats.brass, x, y + 0.16, z);
-    // dome shade
     addCyl(0.38, 0.18, 0.28, 24, mats.brassSoft, x, y, z);
     addSph(0.08, 10, mats.emissiveAmber, x, y - 0.02, z).castShadow = false;
+    addCanopy(x, hangY, z, mats.brass);
   }
 
-  function addBrassChandelier(x, y, z, arms) {
+  function addBrassChandelier(x, y, z, arms, hangY) {
     arms = arms || 6;
-    // medallion + chain
-    addCyl(0.28, 0.28, 0.06, 20, mats.trim, x, y + 2.35, z);
-    for (let i = 0; i < 7; i++) addCyl(0.03, 0.03, 0.16, 8, mats.brass, x, y + 2.2 - i * 0.16, z);
+    hangY = hangY == null ? y + 2.35 : hangY;
+    // chain from the supporting beam down to the body — no orphan ceiling medallion
+    const chainTop = hangY - 0.04;
+    const chainBot = y + 1.05;
+    const chainH = Math.max(0.2, chainTop - chainBot);
+    addCyl(0.03, 0.03, chainH, 8, mats.brass, x, (chainTop + chainBot) / 2, z);
+    addCanopy(x, hangY, z, mats.brass);
     // body
     addCyl(0.14, 0.18, 0.35, 16, mats.brass, x, y + 0.85, z);
     addCyl(0.1, 0.12, 0.2, 16, mats.brass, x, y + 0.58, z);
@@ -722,9 +787,13 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     }
   }
 
-  function addCrystalChandelier(x, y, z) {
-    addCyl(0.22, 0.22, 0.05, 20, mats.trim, x, y + 2.15, z);
-    for (let i = 0; i < 6; i++) addCyl(0.025, 0.025, 0.16, 8, mats.silver, x, y + 2.0 - i * 0.16, z);
+  function addCrystalChandelier(x, y, z, hangY) {
+    hangY = hangY == null ? y + 2.15 : hangY;
+    const chainTop = hangY - 0.04;
+    const chainBot = y + 1.15;
+    const chainH = Math.max(0.2, chainTop - chainBot);
+    addCyl(0.025, 0.025, chainH, 8, mats.silver, x, (chainTop + chainBot) / 2, z);
+    addCanopy(x, hangY, z, mats.silver);
     addCyl(0.16, 0.2, 0.22, 16, mats.silver, x, y + 0.95, z);
     addSph(0.1, 12, mats.crystal, x, y + 0.78, z);
     // two rings of crystals + candle cups
@@ -956,7 +1025,7 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
   return {
     THREE, scene, mats,
     addBox, addRound, addCyl, addSph, mesh,
-    shell, lights, addWindow, addCurtains,
+    shell, lights, addWindow, addCurtains, tagWall, updateCutaways, addBeamX,
     addCabinetRun, addFarmSink, addFaucet, addRange, addPendant,
     addBrassChandelier, addCrystalChandelier,
     addChair, addSofa, addPaneledDoor, addCoat, addBasket,
@@ -966,6 +1035,29 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
 }
 
 /* ---------------- Room builders ---------------- */
+
+
+function dollhouseView(W, D, H, opts) {
+  opts = opts || {};
+  const ox = opts.ox != null ? opts.ox : 0.55;
+  const camX = W * ox + (ox < 0.4 ? -2.2 : ox > 0.65 ? 2.2 : 0);
+  const cam = [camX, opts.hy != null ? opts.hy : (H + 7.4), D + (opts.hz != null ? opts.hz : 8.8)];
+  const target = [
+    W * (opts.tx != null ? opts.tx : 0.48),
+    opts.ty != null ? opts.ty : 1.15,
+    D * (opts.tz != null ? opts.tz : 0.40)
+  ];
+  const topCam = [W / 2, Math.max(H + 70, 90), D / 2 + 0.15];
+  const topT = [W / 2, 0.15, D / 2];
+  return {
+    camera: cam,
+    target: target,
+    top: { camera: topCam, target: topT, fov: 12 },
+    min: opts.min || 6,
+    max: opts.max || 38,
+    fov: opts.fov || 48
+  };
+}
 
 function buildKitchen(kit) {
   const { mats } = kit;
@@ -1059,21 +1151,14 @@ function buildKitchen(kit) {
       kit.addBox(0.18, 0.03, 0.04, mats.brass, dx, dy + 0.12, iZ + iD / 2 + 0.05);
     }
   }
-  kit.addPendant(iX - 1.55, 7.15, iZ);
-  kit.addPendant(iX + 1.55, 7.15, iZ);
+  kit.addPendant(iX - 1.55, 7.15, iZ, H - 0.06);
+  kit.addPendant(iX + 1.55, 7.15, iZ, H - 0.06);
 
   kit.addRug(iX, 13.2, 5.5, 3.2, mats.oriental);
 
   return {
-    camera: [8, 5.7, 26.2],
-    target: [8, 3.2, 10.0],
-    fov: 52,
-    min: 6, max: 32, sun,
-    size: [W, D, H],
-    alts: [
-      { camera: [4.0, 5.2, 19.5], target: [6.5, 3.0, 11.5] },
-      { camera: [12.0, 5.2, 19.5], target: [9.5, 3.0, 11.5] }
-    ]
+    ...dollhouseView(W, D, H, { ox: 0.5, hy: H + 8.2, hz: 11.0, ty: 1.2, tz: 0.42, fov: 50, max: 40 }),
+    sun, size: [W, D, H]
   };
 }
 
@@ -1084,12 +1169,12 @@ function buildDiningShabbos(kit) {
   const sun = kit.lights(W, D, H, [8, 14, 20]);
 
   // Wainscot on back and sides, flush to the wall
-  kit.addBox(W - 0.1, 3.15, 0.08, mats.wainscot, W / 2, 1.58, 0.18);
-  kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, 0.18, 1.58, D / 2);
-  kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, W - 0.18, 1.58, D / 2);
-  kit.addBox(W - 0.1, 0.08, 0.1, mats.trim, W / 2, 3.2, 0.24);
-  kit.addBox(0.1, 0.08, D - 0.1, mats.trim, 0.24, 3.2, D / 2);
-  kit.addBox(0.1, 0.08, D - 0.1, mats.trim, W - 0.24, 3.2, D / 2);
+  kit.tagWall(kit.addBox(W - 0.1, 3.15, 0.08, mats.wainscot, W / 2, 1.58, 0.18), 'back', W, D);
+  kit.tagWall(kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, 0.18, 1.58, D / 2), 'left', W, D);
+  kit.tagWall(kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, W - 0.18, 1.58, D / 2), 'right', W, D);
+  kit.tagWall(kit.addBox(W - 0.1, 0.08, 0.1, mats.trim, W / 2, 3.2, 0.24), 'back', W, D);
+  kit.tagWall(kit.addBox(0.1, 0.08, D - 0.1, mats.trim, 0.24, 3.2, D / 2), 'left', W, D);
+  kit.tagWall(kit.addBox(0.1, 0.08, D - 0.1, mats.trim, W - 0.24, 3.2, D / 2), 'right', W, D);
 
   // Two windows on the BACK wall, curtains flush on a rod — no floating strips
   kit.addWindow('back', 6.2, 3.2, 3.35, 4.3, W, D, H, { curtains: true });
@@ -1132,13 +1217,11 @@ function buildDiningShabbos(kit) {
   addChinaCabinet(kit, 18.55, 8.2, 2.2, 7.2, 1.5);
 
   kit.addRug(tX, tZ, 14.5, 8.4, mats.oriental);
-  kit.addBrassChandelier(tX, 6.55, tZ, 6);
+  kit.addBrassChandelier(tX, 6.55, tZ, 6, H - 0.06);
 
   return {
-    camera: [10, 6.2, 22.5],
-    target: [10, 3.2, 7.2],
-    fov: 48,
-    min: 6, max: 28, sun,
+    ...dollhouseView(W, D, H, { ox: 0.55, hy: H + 7.6, hz: 9.5, ty: 1.15, tz: 0.42, fov: 48 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [4.5, 5.2, 14.5], target: [11, 3.2, 7.5] },
@@ -1188,10 +1271,10 @@ function buildDiningYomTov(kit) {
   kit.shell(W, D, H, { floor: mats.herring, noFront: true });
   const sun = kit.lights(W, D, H, [9, 14, 20]);
 
-  kit.addBox(W - 0.1, 3.15, 0.08, mats.wainscot, W / 2, 1.58, 0.18);
-  kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, 0.18, 1.58, D / 2);
-  kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, W - 0.18, 1.58, D / 2);
-  kit.addBox(W - 0.1, 0.08, 0.1, mats.trim, W / 2, 3.2, 0.24);
+  kit.tagWall(kit.addBox(W - 0.1, 3.15, 0.08, mats.wainscot, W / 2, 1.58, 0.18), 'back', W, D);
+  kit.tagWall(kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, 0.18, 1.58, D / 2), 'left', W, D);
+  kit.tagWall(kit.addBox(0.08, 3.15, D - 0.1, mats.wainscot, W - 0.18, 1.58, D / 2), 'right', W, D);
+  kit.tagWall(kit.addBox(W - 0.1, 0.08, 0.1, mats.trim, W / 2, 3.2, 0.24), 'back', W, D);
 
   // Windows on the back wall only, curtains flush — no vertical bars in the room
   kit.addWindow('back', 6.5, 3.4, 3.35, 4.4, W, D, H, { curtains: true });
@@ -1231,14 +1314,12 @@ function buildDiningYomTov(kit) {
 
   kit.addRug(tX, tZ, 18, 8.6, mats.oriental);
   // Two crystal chandeliers along the table
-  kit.addCrystalChandelier(tX - 3.6, 6.7, tZ);
-  kit.addCrystalChandelier(tX + 3.6, 6.7, tZ);
+  kit.addCrystalChandelier(tX - 3.6, 6.7, tZ, H - 0.06);
+  kit.addCrystalChandelier(tX + 3.6, 6.7, tZ, H - 0.06);
 
   return {
-    camera: [11, 6.3, 23.0],
-    target: [11, 3.2, 7.2],
-    fov: 48,
-    min: 6, max: 30, sun,
+    ...dollhouseView(W, D, H, { ox: 0.55, hy: H + 7.8, hz: 9.8, ty: 1.15, tz: 0.42, fov: 48 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [5, 5.3, 14.8], target: [12, 3.2, 7.4] },
@@ -1306,10 +1387,8 @@ function buildBedroom(kit) {
   kit.addBox(0.03, 1.3, 1.1, mats.green, W - 0.26, 5.4, 10.5);
 
   return {
-    camera: [8, 5.5, 17.8],
-    target: [8, 2.6, 6.0],
-    fov: 48,
-    min: 5, max: 24, sun,
+    ...dollhouseView(W, D, H, { ox: 0.5, hy: H + 7.2, hz: 9.0, ty: 1.1, tz: 0.45, fov: 48 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [3.2, 4.8, 12.8], target: [9, 2.6, 6] },
@@ -1323,10 +1402,10 @@ function buildKids(kit) {
   const W = 14, D = 13, H = 9.2;
   kit.shell(W, D, H, { floor: mats.herring, noFront: true, wall: mats.floral });
   // plaster upper? floral is the wallpaper — keep a painted chair rail / lower panel
-  kit.addBox(W - 0.1, 3.0, 0.06, mats.cream, W / 2, 1.5, 0.2);
-  kit.addBox(0.06, 3.0, D - 0.1, mats.cream, 0.2, 1.5, D / 2);
-  kit.addBox(0.06, 3.0, D - 0.1, mats.cream, W - 0.2, 1.5, D / 2);
-  kit.addBox(W - 0.1, 0.08, 0.08, mats.trim, W / 2, 3.04, 0.24);
+  kit.tagWall(kit.addBox(W - 0.1, 3.0, 0.06, mats.cream, W / 2, 1.5, 0.2), 'back', W, D);
+  kit.tagWall(kit.addBox(0.06, 3.0, D - 0.1, mats.cream, 0.2, 1.5, D / 2), 'left', W, D);
+  kit.tagWall(kit.addBox(0.06, 3.0, D - 0.1, mats.cream, W - 0.2, 1.5, D / 2), 'right', W, D);
+  kit.tagWall(kit.addBox(W - 0.1, 0.08, 0.08, mats.trim, W / 2, 3.04, 0.24), 'back', W, D);
   const sun = kit.lights(W, D, H, [5, 13, 17]);
 
   kit.addWindow('right', 6.5, 3.2, 3.1, 4.2, W, D, H, { curtains: true, curtainMat: mats.curtainSage });
@@ -1388,9 +1467,8 @@ function buildKids(kit) {
   kit.addSph(0.28, 10, mats.green, 12.6, 0.7, 11.4);
 
   return {
-    camera: [9.2, 5.4, 15.6],
-    target: [6.5, 3.2, 6.2],
-    min: 5, max: 22, sun,
+    ...dollhouseView(W, D, H, { ox: 0.72, hy: H + 7.0, hz: 8.6, tx: 0.42, ty: 1.2, tz: 0.42, fov: 48 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [11.5, 5.0, 11.5], target: [5, 3.4, 6.5] },
@@ -1444,10 +1522,8 @@ function buildLiving(kit) {
   kit.addChair(12.2, 1.55, 11.2, -Math.PI * 0.25, 'upholstered');
 
   return {
-    camera: [7.6, 5.35, 16.2],
-    target: [8.8, 2.3, 6.2],
-    fov: 48,
-    min: 5, max: 24, sun,
+    ...dollhouseView(W, D, H, { ox: 0.42, hy: H + 7.4, hz: 9.2, tx: 0.52, ty: 1.1, tz: 0.42, fov: 48 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [3.6, 5.0, 11.8], target: [10, 2.6, 6.5] },
@@ -1465,9 +1541,8 @@ function buildFoyer(kit) {
   // Arched front-door on the LEFT wall, near the front
   const doorZ = 14.2, doorW = 3.2, doorH = 8.0;
   kit.addPaneledDoor(0.16, 0, doorZ, doorW, doorH, '+x', mats.darkWood);
-  // transom / arch suggestion
-  kit.addCyl(1.7, 1.7, 0.16, 24, mats.trim, 0.16, doorH + 0.1, doorZ, 0, Math.PI / 2);
-  kit.addBox(0.12, 0.16, 3.5, mats.trim, 0.16, doorH + 0.18, doorZ);
+  // Clean lintel over the door (a full cylinder read as a disk from above)
+  kit.addBox(0.14, 0.2, doorW + 0.55, mats.trim, 0.16, doorH + 0.1, doorZ);
 
   // Console + gold mirror on the BACK wall — top, apron, legs, not a solid block
   kit.addRound(4.4, 0.12, 1.45, mats.darkWood, 4.6, 2.72, 0.85, 0.04);
@@ -1498,12 +1573,12 @@ function buildFoyer(kit) {
   // Closed stringers (wall side + outer) — sloped carriages under the flight
   const runLen = (nRisers - 1) * run; // 13 runs to the last tread / landing face
   const totalRise = nRisers * rise;
-  const stringerLen = Math.hypot(runLen, totalRise) + 0.6;
+  const stringerLen = Math.hypot(runLen, totalRise) - 0.35;
   const angle = Math.atan2(totalRise, runLen);
   function placeStringer(x) {
     const midZ = zStart + dir * (runLen / 2);
     const midY = totalRise / 2;
-    const s = kit.addBox(0.22, 1.15, stringerLen, mats.walnut, x, midY, midZ);
+    const s = kit.addBox(0.22, 0.85, stringerLen, mats.walnut, x, midY, midZ);
     s.rotation.x = dir * -angle; // pitch along Z
   }
   placeStringer(wallX - 0.10);
@@ -1576,28 +1651,28 @@ function buildFoyer(kit) {
     kit.addBox(0.055, railHeight, 0.055, mats.walnut, xx, landY + railHeight / 2 + 0.06, landFrontZ - 0.12);
   }
 
-  // Handrail — sloped box along the outer stringer line, 2.7' above the nosing line
-  const railLen = Math.hypot(runLen, totalRise) + 0.15;
-  const railMidZ = zStart + dir * (runLen / 2);
-  const railMidY = rise + railHeight + totalRise / 2 - rise / 2;
-  const rail = kit.addBox(0.08, 0.1, railLen, mats.oak, outerX + 0.16, railMidY, railMidZ);
-  rail.rotation.x = dir * -angle;
-  // landing rails
-  kit.addBox(0.08, 0.1, landDepth - 0.3, mats.oak, outerX + 0.16, landY + railHeight + 0.06, landCZ - 0.05);
-  kit.addBox(stairW - 0.4, 0.1, 0.08, mats.oak, (outerX + wallX) / 2 + 0.1, landY + railHeight + 0.06, landFrontZ - 0.12);
+  // Handrails span only from the bottom newel to the top newel — no overshoot past the first riser
+  const railZ0 = newelZ;                 // bottom newel
+  const railZ1 = topNewelZ;              // top newel
+  const railY0 = rise + treadT + railHeight;
+  const railY1 = landY + railHeight + 0.06;
+  const railSpan = Math.hypot(railZ1 - railZ0, railY1 - railY0);
+  const railPitch = Math.atan2(railY1 - railY0, railZ0 - railZ1); // +X rotation: back end goes up
+  const railMidZ = (railZ0 + railZ1) / 2;
+  const railMidY = (railY0 + railY1) / 2;
+  const rail = kit.addBox(0.08, 0.1, railSpan, mats.oak, outerX + 0.16, railMidY, railMidZ);
+  rail.rotation.x = railPitch;
+  // landing rails, ending at the top newel / landing front
+  kit.addBox(0.08, 0.1, Math.max(0.4, landDepth - 0.45), mats.oak, outerX + 0.16, railY1, landCZ - 0.08);
+  kit.addBox(stairW - 0.4, 0.1, 0.08, mats.oak, (outerX + wallX) / 2 + 0.1, railY1, landFrontZ - 0.12);
 
-  // Wall-side rail (simple)
-  const wr = kit.addBox(0.06, 0.08, railLen, mats.oak, wallX - 0.22, railMidY, railMidZ);
-  wr.rotation.x = dir * -angle;
 
-  // Small chandelier in the foyer volume
-  kit.addBrassChandelier(5.2, 8.0, 9.5, 5);
+
+  // No ceiling fixture — a beam would have to stop short of the stair and float.
 
   return {
-    camera: [4.4, 5.55, 22.8],
-    target: [7.6, 3.5, 8.0],
-    fov: 50,
-    min: 6, max: 30, sun,
+    ...dollhouseView(W, D, H, { ox: 0.22, hy: H + 8.0, hz: 10.5, tx: 0.58, ty: 1.4, tz: 0.42, fov: 50, max: 40 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [3.6, 5.0, 14.0], target: [9.2, 3.8, 8.5] },
@@ -1680,10 +1755,8 @@ function buildMudroom(kit) {
   kit.addRug(5.2, 6, 3.2, 9.5, mats.oriental);
 
   return {
-    camera: [5.2, 5.25, 15.0],
-    target: [7.6, 3.3, 5.4],
-    fov: 52,
-    min: 5, max: 24, sun,
+    ...dollhouseView(W, D, H, { ox: 0.38, hy: H + 7.2, hz: 8.8, tx: 0.52, ty: 1.2, tz: 0.42, fov: 50 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [3.0, 4.8, 10.2], target: [9.5, 3.4, 6.5] },
@@ -1743,10 +1816,8 @@ function buildStudy(kit) {
   kit.addFloorLamp(3.6, 4.2);
 
   return {
-    camera: [5.6, 5.3, 16.0],
-    target: [8.0, 2.6, 6.0],
-    fov: 50,
-    min: 5, max: 24, sun,
+    ...dollhouseView(W, D, H, { ox: 0.35, hy: H + 7.2, hz: 8.8, tx: 0.55, ty: 1.15, tz: 0.42, fov: 50 }),
+    sun,
     size: [W, D, H],
     alts: [
       { camera: [3.4, 4.8, 11.5], target: [9, 3, 6] },
@@ -1843,6 +1914,7 @@ function tick() {
   raf = requestAnimationFrame(tick);
   if (!visible || !renderer || !scene || !camera) return;
   if (controls) controls.update();
+  if (currentInfo && typeof currentInfo.updateCutaways === 'function') currentInfo.updateCutaways(camera);
   renderer.render(scene, camera);
 }
 
@@ -1873,7 +1945,7 @@ async function ensureEngine() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.06;
+  renderer.toneMappingExposure = 1.0;
   if (!envTexture) {
     const pmrem = new THREE.PMREMGenerator(renderer);
     envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -1895,22 +1967,28 @@ function mountRoom(id) {
   if ('environmentIntensity' in scene) scene.environmentIntensity = 0.65;
   const kit = createKit(THREE, scene, RoundedBoxGeometry);
   const info = build(kit);
+  info.updateCutaways = kit.updateCutaways;
+  if (!info.top && info.size && info.size.length === 3) {
+    const W = info.size[0], D = info.size[1], H = info.size[2];
+    info.top = { camera: [W / 2, Math.max(H + 70, 90), D / 2 + 0.15], target: [W / 2, 0.15, D / 2], fov: 12 };
+  }
   currentInfo = info;
+  if (kit.updateCutaways) kit.updateCutaways({ position: { x: info.camera[0], y: info.camera[1], z: info.camera[2] } });
   const mobile = window.matchMedia && window.matchMedia('(max-width: 600px)').matches;
   if (mobile && info.sun) info.sun.shadow.mapSize.set(1024, 1024);
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const aspect = e.stage.clientWidth / Math.max(1, e.stage.clientHeight);
   const fov = info.fov || (aspect < 0.85 ? 54 : 46);
-  camera = new THREE.PerspectiveCamera(fov, aspect, 0.15, 90);
+  camera = new THREE.PerspectiveCamera(fov, aspect, 0.15, 400);
   camera.position.set(info.camera[0], info.camera[1], info.camera[2]);
   controls = new OrbitControls(camera, e.canvas);
   controls.target.set(info.target[0], info.target[1], info.target[2]);
   controls.enableDamping = !reduced;
   controls.dampingFactor = 0.08;
-  controls.minDistance = info.min || 4;
-  controls.maxDistance = info.max || 24;
-  controls.minPolarAngle = 0.08;
-  controls.maxPolarAngle = Math.PI / 2 - 0.04;
+  controls.minDistance = info.min || 5;
+  controls.maxDistance = info.max || 140;
+  controls.minPolarAngle = 0.05;
+  controls.maxPolarAngle = Math.PI / 2 - 0.06;
   controls.enablePan = !mobile;
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   controls.update();
@@ -1925,11 +2003,19 @@ function mountRoom(id) {
   renderer.render(scene, camera);
 }
 
-function poseCamera(cx, cy, cz, tx, ty, tz) {
+function poseCamera(cx, cy, cz, tx, ty, tz, fov) {
   if (!camera || !controls) return;
   camera.position.set(cx, cy, cz);
   controls.target.set(tx, ty, tz);
+  if (fov) {
+    camera.fov = fov;
+    camera.updateProjectionMatrix();
+  }
+  // High top poses need a longer tether than the default 3/4 view
+  const dist = camera.position.distanceTo(controls.target);
+  if (dist > controls.maxDistance) controls.maxDistance = dist + 5;
   controls.update();
+  if (currentInfo && typeof currentInfo.updateCutaways === 'function') currentInfo.updateCutaways(camera);
   if (renderer && scene) renderer.render(scene, camera);
 }
 
