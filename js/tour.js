@@ -227,7 +227,8 @@ function buildScene(THREE) {
   mats.black = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.45, metalness: 0.2 });
   mats.sink = new THREE.MeshStandardMaterial({ color: 0xd5d8dc, roughness: 0.22, metalness: 0.58 });
   mats.glass = new THREE.MeshStandardMaterial({
-    color: 0xb8cde0, roughness: 0.12, metalness: 0.05, transparent: true, opacity: 0.42
+    color: 0xf3e6c4, roughness: 0.62, metalness: 0,
+    emissive: 0xffeec0, emissiveIntensity: 0.4
   });
   mats.glow = new THREE.MeshBasicMaterial({ color: 0xfff6e4 });
   mats.shade = new THREE.MeshStandardMaterial({
@@ -290,14 +291,6 @@ function buildScene(THREE) {
       const inward = { north: [0, 0, 1], south: [0, 0, -1], west: [1, 0, 0], east: [-1, 0, 0] }[id];
       const point = { north: [20, 1, 0], south: [20, 1, 28], west: [0, 1, 14], east: [40, 1, 14] }[id];
       g = fadeGroups[id] = { inward: inward, point: point, meshes: [] };
-    }
-    const src = mesh.material;
-    if (src && !(src.userData && src.userData._fadeMat)) {
-      const n = src.clone();
-      n.transparent = true;
-      n.userData = n.userData || {};
-      n.userData._fadeMat = true;
-      mesh.material = n;
     }
     g.meshes.push(mesh);
     return mesh;
@@ -401,32 +394,28 @@ function buildScene(THREE) {
 
   function windowPane(x, y, z, w, h, alongZ) {
     const made = [];
-    const glass = addBox(alongZ ? 0.05 : w, h, alongZ ? w : 0.05, mats.glass, x, y, z);
-    glass.castShadow = false;
-    made.push(glass);
-    // outer frame
-    made.push(addBox(alongZ ? 0.1 : w + 0.22, h + 0.22, alongZ ? w + 0.22 : 0.1, mats.walnut, x, y, z));
-    made[made.length - 1].castShadow = false;
-    // mullions
-    made.push(addBox(alongZ ? 0.08 : 0.06, h, alongZ ? 0.06 : w, mats.walnut, x, y, z));
-    made[made.length - 1].castShadow = false;
-    made.push(addBox(alongZ ? 0.08 : w, 0.06, alongZ ? w : 0.08, mats.walnut, x, y, z));
-    made[made.length - 1].castShadow = false;
-    // daylight just outside
-    const glow = new THREE.Mesh(
-      new THREE.PlaneGeometry(alongZ ? h : w * 0.92, alongZ ? w * 0.92 : h),
-      mats.glow
-    );
+    const pane = addBox(alongZ ? 0.04 : w - 0.12, h - 0.12, alongZ ? w - 0.12 : 0.04, mats.glass, x, y, z);
+    pane.castShadow = false;
+    pane.receiveShadow = false;
+    made.push(pane);
+    // Painted casing — four sides, never a solid slab filling the opening
+    const ft = 0.08, fd = 0.1;
     if (alongZ) {
-      glow.rotation.y = Math.PI / 2;
-      glow.position.set(x + (x < 20 ? -0.12 : 0.12), y, z);
+      made.push(addBox(fd, ft, w + 0.16, mats.base, x, y + h / 2, z));
+      made.push(addBox(fd, ft, w + 0.16, mats.base, x, y - h / 2, z));
+      made.push(addBox(fd, h + 0.16, ft, mats.base, x, y, z - w / 2));
+      made.push(addBox(fd, h + 0.16, ft, mats.base, x, y, z + w / 2));
+      made.push(addBox(fd, h - 0.12, 0.05, mats.base, x, y, z));
+      made.push(addBox(fd, 0.05, w - 0.12, mats.base, x, y, z));
     } else {
-      glow.position.set(x, y, z - 0.12);
+      made.push(addBox(w + 0.16, ft, fd, mats.base, x, y + h / 2, z));
+      made.push(addBox(w + 0.16, ft, fd, mats.base, x, y - h / 2, z));
+      made.push(addBox(ft, h + 0.16, fd, mats.base, x - w / 2, y, z));
+      made.push(addBox(ft, h + 0.16, fd, mats.base, x + w / 2, y, z));
+      made.push(addBox(0.05, h - 0.12, fd, mats.base, x, y, z));
+      made.push(addBox(w - 0.12, 0.05, fd, mats.base, x, y, z));
     }
-    glow.castShadow = false;
-    glow.receiveShadow = false;
-    house.add(glow);
-    made.push(glow);
+    made.forEach(function (m) { m.castShadow = false; });
     let wid = null;
     if (alongZ && x < 5) wid = 'west';
     else if (alongZ && x > 35) wid = 'east';
@@ -473,7 +462,16 @@ function buildScene(THREE) {
   shakerFace(2.18, 1.15, 4.6, 1.3, 1.7, 'x', 1, false);
   shakerFace(2.18, 1.15, 8.85, 1.4, 1.7, 'x', 1, false);
   shakerFace(2.18, 2.45, 8.85, 1.4, 0.7, 'x', 1, true);
-  addBox(1.3, 0.12, 1.6, mats.sink, 1.2, 3.14, 4.5);
+  // Recessed meat sink (look down into a stainless well)
+  addBox(1.15, 0.06, 1.5, mats.sink, 1.25, 2.58, 4.5);
+  addBox(0.06, 0.55, 1.5, mats.sink, 1.25 - 0.54, 2.88, 4.5);
+  addBox(0.06, 0.55, 1.5, mats.sink, 1.25 + 0.54, 2.88, 4.5);
+  addBox(1.15, 0.55, 0.06, mats.sink, 1.25, 2.88, 4.5 - 0.72);
+  addBox(1.15, 0.55, 0.06, mats.sink, 1.25, 2.88, 4.5 + 0.72);
+  addBox(0.12, 0.05, 1.62, mats.sink, 1.25 - 0.62, 3.12, 4.5);
+  addBox(0.12, 0.05, 1.62, mats.sink, 1.25 + 0.62, 3.12, 4.5);
+  addBox(1.15, 0.05, 0.12, mats.sink, 1.25, 3.12, 4.5 - 0.78);
+  addBox(1.15, 0.05, 0.12, mats.sink, 1.25, 3.12, 4.5 + 0.78);
   // Meat range
   addBox(1.7, 3.05, 2.2, mats.steel, 1.25, 1.55, 7.3);
   addBox(1.55, 0.08, 2.05, mats.black, 1.28, 3.12, 7.3);
@@ -493,6 +491,12 @@ function buildScene(THREE) {
   addBox(0.05, 6.3, 2.3, mats.black, 2.44, 3.35, 12.15);
   barHandle(2.55, 3.6, 12.15, false, false);
 
+  // Corner cabinet tying the meat (west) run into the dairy (north) run
+  addBox(2.0, 3.0, 2.0, mats.cream, 1.15, 1.5, 1.15);
+  addBox(2.15, 0.12, 2.15, mats.marble, 1.15, 3.06, 1.15);
+  addBox(1.15, 2.8, 1.15, mats.cream, 0.72, 5.9, 0.72);
+  shakerFace(1.32, 5.9, 0.72, 1.0, 2.5, 'x', 1, false);
+
   // Dairy run, north wall
   addBox(6.4, 3.0, 2.0, mats.cream, 10.6, 1.5, 1.15);
   addBox(6.55, 0.12, 2.15, mats.marble, 10.6, 3.06, 1.15);
@@ -500,7 +504,15 @@ function buildScene(THREE) {
   shakerFace(10.0, 1.15, 2.18, 1.4, 1.7, 'z', 1, false);
   shakerFace(13.3, 1.15, 2.18, 1.4, 1.7, 'z', 1, false);
   shakerFace(13.3, 2.45, 2.18, 1.4, 0.7, 'z', 1, true);
-  addBox(1.8, 0.12, 1.4, mats.sink, 9.8, 3.14, 1.2);
+  addBox(1.7, 0.06, 1.25, mats.sink, 9.8, 2.58, 1.25);
+  addBox(1.7, 0.55, 0.06, mats.sink, 9.8, 2.88, 1.25 - 0.59);
+  addBox(1.7, 0.55, 0.06, mats.sink, 9.8, 2.88, 1.25 + 0.59);
+  addBox(0.06, 0.55, 1.25, mats.sink, 9.8 - 0.82, 2.88, 1.25);
+  addBox(0.06, 0.55, 1.25, mats.sink, 9.8 + 0.82, 2.88, 1.25);
+  addBox(1.82, 0.05, 0.12, mats.sink, 9.8, 3.12, 1.25 - 0.68);
+  addBox(1.82, 0.05, 0.12, mats.sink, 9.8, 3.12, 1.25 + 0.68);
+  addBox(0.12, 0.05, 1.25, mats.sink, 9.8 - 0.88, 3.12, 1.25);
+  addBox(0.12, 0.05, 1.25, mats.sink, 9.8 + 0.88, 3.12, 1.25);
   addBox(2.2, 3.05, 1.7, mats.steel, 12.35, 1.55, 1.25);
   addBox(2.05, 0.08, 1.55, mats.black, 12.35, 3.12, 1.28);
   addBox(0.08, 1.4, 1.5, mats.black, 12.35, 1.5, 2.08);
@@ -573,8 +585,6 @@ function buildScene(THREE) {
     pl.position.set(x, yBottom - 0.15, z);
     scene.add(pl);
   }
-  pendant(6.3, 7.5, 5.4);
-  pendant(8.7, 7.5, 5.4);
 
   /* ---------- Dining ---------- */
   addBox(12.0, 0.16, 4.0, mats.walnut, 24, 2.48, 7);
@@ -586,8 +596,6 @@ function buildScene(THREE) {
   addBox(8.0, 0.08, 1.45, mats.walnutDark, 24, 2.84, 0.9);
   shakerFace(22.4, 1.3, 1.62, 2.2, 2.2, 'z', 1, false);
   shakerFace(25.6, 1.3, 1.62, 2.2, 2.2, 'z', 1, false);
-  pendant(21.2, 7, 5.6);
-  pendant(26.8, 7, 5.6);
 
   const chairProto = (function () {
     const g = new THREE.Group();

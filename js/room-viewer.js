@@ -524,15 +524,17 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     }
     // Casing only — never a solid dark slab in the opening
     addBox(sx, sy, sz, mats.trim, fx, fy, fz);
-    // Daylight pane (unlit) so the opening never reads as a black hole
-    const sky = new THREE.MeshBasicMaterial({ color: 0xf3e4b8 });
+    // Single frosted light panel — no transparent glass (it doubled fixtures as ghosts)
+    const sky = new THREE.MeshStandardMaterial({
+      color: 0xf3e6c4, roughness: 0.62, metalness: 0,
+      emissive: 0xffeec0, emissiveIntensity: 0.45
+    });
     const paneW = wall === 'back' ? width - 0.16 : 0.04;
     const paneH = height - 0.16;
     const paneD = wall === 'back' ? 0.04 : width - 0.16;
-    addBox(paneW, paneH, paneD, sky, gx, gy, gz).castShadow = false;
-    const glass = addBox(paneW, paneH, paneD, mats.glassClear, gx, gy, gz);
-    glass.castShadow = false;
-    addBox(glowSize[0], glowSize[1], glowSize[2], mats.glowWarm, glowPos[0], glowPos[1], glowPos[2]).castShadow = false;
+    const pane = addBox(paneW, paneH, paneD, sky, gx, gy, gz);
+    pane.castShadow = false;
+    pane.receiveShadow = false;
     if (mullion) {
       if (wall === 'back') {
         addBox(0.04, height - 0.16, 0.05, mats.trim, pos, fy, 0.16);
@@ -636,29 +638,30 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
   }
 
   function addFarmSink(cx, cz, facing, W) {
-    // Farmhouse apron sink + high-arc brass faucet. Basin clearly open.
-    // facing '+x' = left wall (apron faces into room toward +x)
-    const apronW = 2.5, apronH = 0.72, apronT = 0.1, basinD = 1.55, basinW = 2.2, basinH = 0.42;
-    const counterY = 3.05;
-    if (facing === '+x') {
-      addRound(apronT, apronH, apronW, mats.porcelain, cx + 0.85, counterY - apronH / 2 + 0.02, cz, 0.03);
-      // open basin — recess into the counter by a dark interior + white walls
-      addBox(basinD, 0.05, basinW, mats.porcelain, cx + 0.05, counterY - basinH, cz);
-      addBox(0.05, basinH, basinW, mats.porcelain, cx - basinD / 2 + 0.08, counterY - basinH / 2, cz);
-      addBox(basinD, basinH, 0.05, mats.porcelain, cx + 0.05, counterY - basinH / 2, cz - basinW / 2);
-      addBox(basinD, basinH, 0.05, mats.porcelain, cx + 0.05, counterY - basinH / 2, cz + basinW / 2);
-      // dark water surface
-      addBox(basinD - 0.1, 0.02, basinW - 0.1, mats.green, cx + 0.05, counterY - basinH + 0.08, cz);
-      addFaucet(cx - 0.35, counterY, cz, '+x');
-    } else if (facing === '-x') {
-      addRound(apronT, apronH, apronW, mats.porcelain, cx - 0.85, counterY - apronH / 2 + 0.02, cz, 0.03);
-      addBox(basinD, 0.05, basinW, mats.porcelain, cx - 0.05, counterY - basinH, cz);
-      addBox(0.05, basinH, basinW, mats.porcelain, cx + basinD / 2 - 0.08, counterY - basinH / 2, cz);
-      addBox(basinD, basinH, 0.05, mats.porcelain, cx - 0.05, counterY - basinH / 2, cz - basinW / 2);
-      addBox(basinD, basinH, 0.05, mats.porcelain, cx - 0.05, counterY - basinH / 2, cz + basinW / 2);
-      addBox(basinD - 0.1, 0.02, basinW - 0.1, mats.green, cx - 0.05, counterY - basinH + 0.08, cz);
-      addFaucet(cx + 0.35, counterY, cz, '-x');
-    }
+    // White farmhouse sink: recessed basin you can look down into, apron in front, faucet on the back deck.
+    const dir = facing === '+x' ? 1 : -1;
+    const counterY = 3.10;
+    const basinW = 2.05, basinD = 1.38, basinH = 0.62, lip = 0.11;
+    const basinX = cx + dir * 0.22;
+    // Basin floor + slightly darker interior so the well reads from above
+    addBox(basinD, 0.05, basinW, mats.porcelain, basinX, counterY - basinH, cz);
+    addBox(basinD - 0.14, 0.03, basinW - 0.14, mats.chrome, basinX, counterY - basinH + 0.04, cz);
+    addCyl(0.08, 0.08, 0.03, 12, mats.iron, basinX, counterY - basinH + 0.07, cz);
+    // Inner walls
+    addBox(0.06, basinH, basinW, mats.porcelain, basinX - dir * (basinD / 2 - 0.03), counterY - basinH / 2, cz);
+    addBox(0.06, basinH, basinW, mats.porcelain, basinX + dir * (basinD / 2 - 0.03), counterY - basinH / 2, cz);
+    addBox(basinD, basinH, 0.06, mats.porcelain, basinX, counterY - basinH / 2, cz - basinW / 2 + 0.03);
+    addBox(basinD, basinH, 0.06, mats.porcelain, basinX, counterY - basinH / 2, cz + basinW / 2 - 0.03);
+    // Rim as four lips at the counter — leaves a clear opening into the well
+    const rimY = counterY + 0.025;
+    addBox(lip, 0.05, basinW + lip * 2, mats.porcelain, basinX - dir * (basinD / 2 + lip / 2), rimY, cz);
+    addBox(lip, 0.05, basinW + lip * 2, mats.porcelain, basinX + dir * (basinD / 2 + lip / 2), rimY, cz);
+    addBox(basinD, 0.05, lip, mats.porcelain, basinX, rimY, cz - basinW / 2 - lip / 2);
+    addBox(basinD, 0.05, lip, mats.porcelain, basinX, rimY, cz + basinW / 2 + lip / 2);
+    // Farmhouse apron on the room face
+    addRound(0.11, 0.74, basinW + 0.28, mats.porcelain, basinX + dir * (basinD / 2 + 0.07), counterY - 0.34, cz, 0.03);
+    // Faucet stands on the back deck, between the basin and the wall, arching over the well
+    addFaucet(basinX - dir * (basinD / 2 + 0.18), counterY, cz, facing);
   }
 
   function addFaucet(x, y, z, facing) {
@@ -675,6 +678,18 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     addCyl(0.022, 0.022, 0.45, 12, mats.brass, x + dir * 0.22, y + 0.74, z, 0, Math.PI / 2);
     // tip down
     addCyl(0.018, 0.024, 0.14, 10, mats.brass, x + dir * 0.42, y + 0.68, z);
+  }
+
+  function addSconce(x, y, z, facing) {
+    const dir = facing === '+x' ? [1, 0] : facing === '-x' ? [-1, 0] : facing === '+z' ? [0, 1] : [0, -1];
+    addCyl(0.045, 0.05, 0.1, 10, mats.brass, x, y, z);
+    if (facing === '+x' || facing === '-x') {
+      addCyl(0.03, 0.03, 0.16, 8, mats.brass, x + dir[0] * 0.1, y, z, 0, Math.PI / 2);
+      addCyl(0.12, 0.16, 0.28, 12, mats.linen, x + dir[0] * 0.22, y - 0.22, z);
+    } else {
+      addCyl(0.03, 0.03, 0.16, 8, mats.brass, x, y, z + dir[1] * 0.1, Math.PI / 2, 0);
+      addCyl(0.12, 0.16, 0.28, 12, mats.linen, x, y - 0.22, z + dir[1] * 0.22);
+    }
   }
 
   function addRange(cx, cz, facing, H) {
@@ -1026,7 +1041,7 @@ function createKit(THREE, scene, RoundedBoxGeometry) {
     THREE, scene, mats,
     addBox, addRound, addCyl, addSph, mesh,
     shell, lights, addWindow, addCurtains, tagWall, updateCutaways, addBeamX,
-    addCabinetRun, addFarmSink, addFaucet, addRange, addPendant,
+    addCabinetRun, addFarmSink, addFaucet, addSconce, addRange, addPendant,
     addBrassChandelier, addCrystalChandelier,
     addChair, addSofa, addPaneledDoor, addCoat, addBasket,
     addRug, addLamp, addFloorLamp, addTableLamp,
@@ -1082,7 +1097,7 @@ function buildKitchen(kit) {
   kit.addPaneledDoor(doorX, 0, doorZ, doorW, doorH, '+z', mats.creamCab);
   // small transom window ABOVE the door, with a framed glow behind it (not a doorway void)
   kit.addBox(doorW + 0.3, 0.08, 0.12, mats.trim, doorX, doorH + 0.2, 0.16);
-  kit.addBox(doorW - 0.1, 1.35, 0.04, mats.glassClear, doorX, doorH + 0.95, 0.08);
+  kit.addBox(doorW - 0.1, 1.35, 0.04, mats.glow, doorX, doorH + 0.95, 0.08).castShadow = false;
   kit.addBox(0.04, 1.35, 0.04, mats.trim, doorX, doorH + 0.95, 0.12);
   kit.addBox(doorW - 0.1, 0.04, 0.04, mats.trim, doorX, doorH + 0.95, 0.12);
   // glow lives behind the transom, in the wall thickness — small, framed
@@ -1112,13 +1127,13 @@ function buildKitchen(kit) {
   kit.addBox(1.6, 0.1, 0.35, mats.marble, leftX - 0.1, 3.1, sinkZ + 1.45);
   kit.addFarmSink(leftX, sinkZ, '+x', W);
   // cabinets from sink to front wall
-  kit.addCabinetRun(0.15, 2.15, sinkZ + 1.45, D - 0.4, 0.3, 3.05, '+x', false);
-  kit.addBox(1.95, 0.1, (D - 0.4) - (sinkZ + 1.45), mats.marble, leftX, 3.1, (sinkZ + 1.45 + D - 0.4) / 2);
+  kit.addCabinetRun(0.15, 2.15, sinkZ + 1.45, D - 0.06, 0.3, 3.05, '+x', false);
+  kit.addBox(1.95, 0.1, (D - 0.06) - (sinkZ + 1.45), mats.marble, leftX, 3.1, (sinkZ + 1.45 + D - 0.06) / 2);
 
   // left uppers: skip the window and the hood
   kit.addCabinetRun(0.15, 1.55, 1.7, rangeZ - 1.5, 5.15, 9.15, '+x', true);
   kit.addCabinetRun(0.15, 1.55, rangeZ + 1.55, sinkZ - 1.5, 5.15, 9.15, '+x', true);
-  kit.addCabinetRun(0.15, 1.55, sinkZ + 1.55, D - 0.4, 5.15, 9.15, '+x', true);
+  kit.addCabinetRun(0.15, 1.55, sinkZ + 1.55, D - 0.06, 5.15, 9.15, '+x', true);
 
   // RIGHT (dairy): mirror
   kit.addWindow('right', sinkZ, 2.55, 3.15, 3.7, W, D, H, { curtains: true });
@@ -1131,11 +1146,11 @@ function buildKitchen(kit) {
   kit.addBox(1.6, 0.1, 0.35, mats.marble, rightX + 0.1, 3.1, sinkZ - 1.45);
   kit.addBox(1.6, 0.1, 0.35, mats.marble, rightX + 0.1, 3.1, sinkZ + 1.45);
   kit.addFarmSink(rightX, sinkZ, '-x', W);
-  kit.addCabinetRun(W - 2.15, W - 0.15, sinkZ + 1.45, D - 0.4, 0.3, 3.05, '-x', false);
-  kit.addBox(1.95, 0.1, (D - 0.4) - (sinkZ + 1.45), mats.marble, rightX, 3.1, (sinkZ + 1.45 + D - 0.4) / 2);
+  kit.addCabinetRun(W - 2.15, W - 0.15, sinkZ + 1.45, D - 0.06, 0.3, 3.05, '-x', false);
+  kit.addBox(1.95, 0.1, (D - 0.06) - (sinkZ + 1.45), mats.marble, rightX, 3.1, (sinkZ + 1.45 + D - 0.06) / 2);
   kit.addCabinetRun(W - 1.55, W - 0.15, 1.7, rangeZ - 1.5, 5.15, 9.15, '-x', true);
   kit.addCabinetRun(W - 1.55, W - 0.15, rangeZ + 1.55, sinkZ - 1.5, 5.15, 9.15, '-x', true);
-  kit.addCabinetRun(W - 1.55, W - 0.15, sinkZ + 1.55, D - 0.4, 5.15, 9.15, '-x', true);
+  kit.addCabinetRun(W - 1.55, W - 0.15, sinkZ + 1.55, D - 0.06, 5.15, 9.15, '-x', true);
 
   // Pareve island — drawers face the camera
   const iX = 8, iZ = 9.0, iW = 6.2, iD = 3.2, iH = 3.05;
@@ -1151,10 +1166,18 @@ function buildKitchen(kit) {
       kit.addBox(0.18, 0.03, 0.04, mats.brass, dx, dy + 0.12, iZ + iD / 2 + 0.05);
     }
   }
-  kit.addPendant(iX - 1.55, 7.15, iZ, H - 0.06);
-  kit.addPendant(iX + 1.55, 7.15, iZ, H - 0.06);
+  // Wall sconces flanking the back door — no hanging fixtures
+  kit.addSconce(doorX - 2.15, 6.05, 0.2, '+z');
+  kit.addSconce(doorX + 2.15, 6.05, 0.2, '+z');
 
   kit.addRug(iX, 13.2, 5.5, 3.2, mats.oriental);
+
+  // Short front-wall returns so the last cabinets die into a wall, not the open void
+  const retW = 2.3, wt = 0.28;
+  kit.addBox(retW + wt, H, wt, mats.plaster, (retW - wt) / 2, H / 2, D + wt / 2);
+  kit.addBox(retW + wt + 0.06, 0.08, wt + 0.08, mats.trim, (retW - wt) / 2, H + 0.04, D + wt / 2);
+  kit.addBox(retW + wt, H, wt, mats.plaster, W - (retW - wt) / 2, H / 2, D + wt / 2);
+  kit.addBox(retW + wt + 0.06, 0.08, wt + 0.08, mats.trim, W - (retW - wt) / 2, H + 0.04, D + wt / 2);
 
   return {
     ...dollhouseView(W, D, H, { ox: 0.5, hy: H + 8.2, hz: 11.0, ty: 1.2, tz: 0.42, fov: 50, max: 40 }),
@@ -1217,7 +1240,8 @@ function buildDiningShabbos(kit) {
   addChinaCabinet(kit, 18.55, 8.2, 2.2, 7.2, 1.5);
 
   kit.addRug(tX, tZ, 14.5, 8.4, mats.oriental);
-  kit.addBrassChandelier(tX, 6.55, tZ, 6, H - 0.06);
+  kit.addSconce(0.2, 5.9, tZ, '+x');
+  kit.addSconce(W - 0.2, 5.9, tZ, '-x');
 
   return {
     ...dollhouseView(W, D, H, { ox: 0.55, hy: H + 7.6, hz: 9.5, ty: 1.15, tz: 0.42, fov: 48 }),
@@ -1310,12 +1334,12 @@ function buildDiningYomTov(kit) {
   kit.addRound(1.55, 2.55, 5.6, mats.darkWood, W - 1.15, 1.28, 8, 0.05);
   kit.addBox(1.65, 0.1, 5.8, mats.darkWood, W - 1.15, 2.62, 8);
   kit.addBox(0.06, 3.2, 2.2, mats.brass, W - 0.22, 5.3, 8);
-  kit.addBox(0.03, 2.95, 1.95, mats.glass, W - 0.26, 5.3, 8);
+  kit.addBox(0.03, 2.95, 1.95, mats.silver, W - 0.26, 5.3, 8);
 
   kit.addRug(tX, tZ, 18, 8.6, mats.oriental);
   // Two crystal chandeliers along the table
-  kit.addCrystalChandelier(tX - 3.6, 6.7, tZ, H - 0.06);
-  kit.addCrystalChandelier(tX + 3.6, 6.7, tZ, H - 0.06);
+  kit.addSconce(0.2, 5.9, tZ, '+x');
+  kit.addSconce(W - 0.2, 5.9, tZ, '-x');
 
   return {
     ...dollhouseView(W, D, H, { ox: 0.55, hy: H + 7.8, hz: 9.8, ty: 1.15, tz: 0.42, fov: 48 }),
@@ -1336,9 +1360,6 @@ function buildBedroom(kit) {
 
   // Bay window on the back wall with curtains
   kit.addWindow('back', W / 2, 5.4, 2.6, 5.2, W, D, H, { curtains: true, mullion: true });
-  // shallow bay bump
-  kit.addBox(5.8, 0.08, 1.1, mats.trim, W / 2, 2.55, 0.55);
-
   function addBed(cx, cz) {
     // upholstered headboard against the left/right? beds along the side walls, heads toward the back? 
     // Photo: two twins side by side, heads toward the left or back. Layout OK: two beds + nightstand between, heads toward back wall.
@@ -1561,7 +1582,7 @@ function buildFoyer(kit) {
 
   // Straight stair attached to the RIGHT wall, with stringers, risers, treads,
   // newel, balusters, and a top landing — not floating blocks.
-  const rise = 0.625, run = 0.90, nRisers = 14;
+  const rise = 0.625, run = 0.90, nRisers = 12;
   const stairW = 3.55;
   const wallX = W; // right wall inner is ~W, treads go from wallX-stairW to wallX-0.02
   const outerX = wallX - stairW;
