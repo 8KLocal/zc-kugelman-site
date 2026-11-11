@@ -459,6 +459,9 @@ body.locked{overflow:hidden}
 }
 
 /* ---- Per-room 3D viewer ---- */
+html:not(.room-viewer-on) .view3d-btn,
+html:not(.room-viewer-on) .pm-study-row{display:none!important}
+
 .view3d-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--green);background:var(--paper);color:var(--green);font:500 .58rem/1 var(--label);letter-spacing:.12em;text-transform:uppercase;padding:.5rem .75rem;cursor:pointer;transition:background .3s,color .3s;z-index:2}
 .view3d-btn:hover,.view3d-btn:focus-visible{background:var(--green);color:var(--paper)}
 .panel-img{position:relative}

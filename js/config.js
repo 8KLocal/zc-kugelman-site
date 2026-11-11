@@ -19,6 +19,10 @@ window.SITE_CONFIG = {
   // Option B: leave blank and set a real email above; the form opens the visitor's email app (mailto).
   formEndpoint: "",
 
+  // Per-room "View in 3D" models. The whole-home #tour is separate and stays on.
+  // Flip to true only after every room has been inspected and signed off.
+  roomViewer: false,
+
   // COUNTERS ("planning numbers"). These are planning facts/guidelines, not business stats.
   // Swap in real business numbers (projects completed, years, etc.) once you have them.
   counters: [
@@ -28,3 +32,5 @@ window.SITE_CONFIG = {
     { value: 1,  suffix: "",   label: "Measured floor plan before a single wall moves" }
   ]
 };
+
+if (window.SITE_CONFIG.roomViewer) document.documentElement.classList.add("room-viewer-on");

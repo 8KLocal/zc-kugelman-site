@@ -37,7 +37,9 @@
 
 
   /* Map a photo path to a per-room 3D model id (null = no 3D button). */
+  function roomViewerOn() { return !!(C.roomViewer || (document.documentElement && document.documentElement.classList.contains('room-viewer-on'))); }
   function roomIdFromSrc(src) {
+    if (!roomViewerOn()) return null;
     var s = String(src || '').toLowerCase();
     if (/kosher-kitchen|park-slope-kosher-kitchen\/01/.test(s)) return 'kitchen';
     if (/yom-tov-dining|park-slope-kosher-kitchen\/02/.test(s)) return 'dining-yomtov';
@@ -387,7 +389,7 @@
           (room ? '<button type="button" class="view3d-btn" data-room="' + room + '">View in 3D</button>' : '') +
           '</div>';
       }).join('') + '</div>' +
-      (p.slug && /midwood/.test(p.slug) ? '<p class="pm-study-row pm-fade" style="--i:' + (k + imgs.length) + '"><button type="button" class="view3d-btn" data-room="study">View study in 3D</button></p>' : '') +
+      (roomViewerOn() && p.slug && /midwood/.test(p.slug) ? '<p class="pm-study-row pm-fade" style="--i:' + (k + imgs.length) + '"><button type="button" class="view3d-btn" data-room="study">View study in 3D</button></p>' : '') +
       (plans.length ? '<h3 class="pm-sub pm-fade" style="--i:' + (k + imgs.length) + '">Floor plans &amp; layouts</h3>' +
         (p.sample ? '<p class="pm-subnote">Sample plans: illustrative, not real client drawings.</p>' : '') +
         '<div class="pm-plans">' + plans.map(function (pl, i) {

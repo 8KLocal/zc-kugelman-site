@@ -1189,7 +1189,13 @@ function mountRoom(id) {
   renderer.render(scene, camera);
 }
 
+function roomViewerEnabled() {
+  const C = window.SITE_CONFIG || {};
+  return !!(C.roomViewer || (document.documentElement && document.documentElement.classList.contains('room-viewer-on')));
+}
+
 async function openRoom(id) {
+  if (!roomViewerEnabled()) return;
   if (!BUILDERS[id]) return;
   const e = els();
   if (!e.modal || !e.stage || !e.canvas) return;
