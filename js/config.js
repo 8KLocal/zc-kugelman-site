@@ -21,7 +21,7 @@ window.SITE_CONFIG = {
 
   // Per-room "View in 3D" models. The whole-home #tour is separate and stays on.
   // Flip to true only after every room has been inspected and signed off.
-  roomViewer: false,
+  roomViewer: true,
 
   // COUNTERS ("planning numbers"). These are planning facts/guidelines, not business stats.
   // Swap in real business numbers (projects completed, years, etc.) once you have them.
