@@ -35,6 +35,26 @@
   }
 
 
+
+  /* Map a photo path to a per-room 3D model id (null = no 3D button). */
+  function roomIdFromSrc(src) {
+    var s = String(src || '').toLowerCase();
+    if (/kosher-kitchen|park-slope-kosher-kitchen\/01/.test(s)) return 'kitchen';
+    if (/yom-tov-dining|park-slope-kosher-kitchen\/02/.test(s)) return 'dining-yomtov';
+    if (/shabbos-dining|midwood-ground-floor\/02|\/hero\/hero/.test(s)) return 'dining-shabbos';
+    if (/primary-bedroom|flatbush-family-home\/03/.test(s)) return 'bedroom';
+    if (/kids-bunk-room|flatbush-family-home\/04/.test(s)) return 'kids';
+    if (/seforim-living-room|flatbush-family-home\/02/.test(s)) return 'living';
+    if (/brownstone-foyer|flatbush-family-home\/01/.test(s)) return 'foyer';
+    if (/mudroom-entry-storage/.test(s)) return 'mudroom';
+    return null;
+  }
+  function openRoomView(id) {
+    if (!id) return;
+    if (window.ZCRooms && typeof window.ZCRooms.open === 'function') window.ZCRooms.open(id);
+    else document.dispatchEvent(new CustomEvent('zc:open-room', { detail: id }));
+  }
+
   /* ---------- 1. Apply config (brand name lives in js/config.js) ---------- */
   function applyConfig() {
     var brand = C.brandName || 'Interior Design';
@@ -361,8 +381,13 @@
       (p.scope && p.scope.length ? '<p class="eyebrow pm-fade" style="--i:' + (k++) + '">Scope</p><ul class="chips pm-fade" style="--i:' + (k++) + '">' + p.scope.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '') +
       '<div class="pm-desc pm-fade" style="--i:' + (k++) + '">' + String(cleanDisplay(p.description) || '').split(/\n{2,}/).map(function (para) { return '<p>' + esc(para) + '</p>'; }).join('') + '</div>' +
       '<div class="pm-gallery">' + imgs.map(function (im, i) {
-        return '<button class="pm-fade" style="--i:' + (k + i) + '" data-lb="' + i + '" aria-label="View photo ' + (i + 1) + '"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title) + '" loading="lazy"></button>';
+        var room = roomIdFromSrc(im.src);
+        return '<div class="pm-shot pm-fade" style="--i:' + (k + i) + '">' +
+          '<button type="button" data-lb="' + i + '" aria-label="View photo ' + (i + 1) + '"><img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title) + '" loading="lazy"></button>' +
+          (room ? '<button type="button" class="view3d-btn" data-room="' + room + '">View in 3D</button>' : '') +
+          '</div>';
       }).join('') + '</div>' +
+      (p.slug && /midwood/.test(p.slug) ? '<p class="pm-study-row pm-fade" style="--i:' + (k + imgs.length) + '"><button type="button" class="view3d-btn" data-room="study">View study in 3D</button></p>' : '') +
       (plans.length ? '<h3 class="pm-sub pm-fade" style="--i:' + (k + imgs.length) + '">Floor plans &amp; layouts</h3>' +
         (p.sample ? '<p class="pm-subnote">Sample plans: illustrative, not real client drawings.</p>' : '') +
         '<div class="pm-plans">' + plans.map(function (pl, i) {
@@ -401,12 +426,17 @@
     if (!list.length) { grid.innerHTML = '<p class="empty">Concepts coming soon.</p>'; return; }
     var lbList = list.map(function (c) { return { src: asset(c.src), alt: c.title, caption: c.title }; });
     grid.innerHTML = list.map(function (c, i) {
-      return '<button class="concept" data-i="' + i + '" aria-label="View concept: ' + esc(c.title) + '">' +
-        '<div class="clip" data-reveal="clip"><img src="' + esc(asset(c.src)) + '" alt="' + esc(c.title) + '" loading="lazy"></div>' +
-        '<div class="concept-cap" data-reveal><h3>' + esc(c.title) + '</h3>' + (c.description ? '<p>' + esc(cleanDisplay(c.description)) + '</p>' : '') + '</div></button>';
+      var room = roomIdFromSrc(c.src);
+      return '<article class="concept">' +
+        '<button type="button" class="concept-open" data-i="' + i + '" aria-label="View concept: ' + esc(c.title) + '">' +
+        '<div class="clip" data-reveal="clip"><img src="' + esc(asset(c.src)) + '" alt="' + esc(c.title) + '" loading="lazy"></div></button>' +
+        '<div class="concept-cap" data-reveal><h3>' + esc(c.title) + '</h3>' + (c.description ? '<p>' + esc(cleanDisplay(c.description)) + '</p>' : '') +
+        (room ? '<button type="button" class="view3d-btn" data-room="' + room + '">View in 3D</button>' : '') +
+        '</div></article>';
     }).join('');
     grid.addEventListener('click', function (e) {
-      var b = e.target.closest('.concept'); if (b) lbOpen(lbList, Number(b.getAttribute('data-i')));
+      if (e.target.closest('.view3d-btn')) return;
+      var b = e.target.closest('.concept-open'); if (b) lbOpen(lbList, Number(b.getAttribute('data-i')));
     });
     observe(grid);
   }
@@ -473,6 +503,8 @@
       window.addEventListener('resize', function () { measureHS(); requestUpdate(); });
       window.addEventListener('load', function () { measureHS(); requestUpdate(); });
       document.addEventListener('keydown', function (e) {
+        var roomModal = $('#roomModal');
+        if (roomModal && !roomModal.hidden) return;
         if (!lb.hidden) {
           if (e.key === 'Escape') lbClose();
           else if (e.key === 'ArrowRight') lbShow(lbIdx + 1);

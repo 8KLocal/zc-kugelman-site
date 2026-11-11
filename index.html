@@ -132,7 +132,7 @@
           </div>
           <p class="tour-hint">Drag to rotate &middot; scroll or pinch to zoom</p>
         </div>
-        <p class="tour-note">Illustrative example, not a real client's home. Dimensions match the floor plan above.</p>
+        <p class="tour-note">Illustrative example, not a real client's home. Dimensions match the floor plan above. <button type="button" class="view3d-btn" data-room="study">View study in 3D</button></p>
       </div>
     </section>
 
@@ -199,19 +199,19 @@
             <h2 class="h2">The layout questions we answer <em>before</em> you have to ask.</h2>
           </article>
           <article class="panel">
-            <div class="panel-img"><img src="images/concepts/kosher-kitchen.jpg" alt="Kosher kitchen with a sink and stove on each side and a pareve island" loading="lazy"></div>
+            <div class="panel-img"><img src="images/concepts/kosher-kitchen.jpg" alt="Kosher kitchen with a sink and stove on each side and a pareve island" loading="lazy"><button type="button" class="view3d-btn" data-room="kitchen">View in 3D</button></div>
             <div class="panel-text"><span>01</span><h3>Meat &amp; dairy work zones</h3><p>Meat and dairy each have their own sink and stove, with a pareve island in the middle, so two people can cook at once without crossing paths.</p></div>
           </article>
           <article class="panel">
-            <div class="panel-img"><img src="images/concepts/yom-tov-dining.jpg" alt="Yom Tov dining room" loading="lazy"></div>
+            <div class="panel-img"><img src="images/concepts/yom-tov-dining.jpg" alt="Yom Tov dining room" loading="lazy"><button type="button" class="view3d-btn" data-room="dining-yomtov">View in 3D</button></div>
             <div class="panel-text"><span>02</span><h3>A dining room sized for Yom Tov</h3><p>We plan the room around the biggest table you'll need, with walkway space behind every chair.</p></div>
           </article>
           <article class="panel">
-            <div class="panel-img"><img src="images/concepts/kids-bunk-room.jpg" alt="Shared kids room with bunks" loading="lazy"></div>
+            <div class="panel-img"><img src="images/concepts/kids-bunk-room.jpg" alt="Shared kids room with bunks" loading="lazy"><button type="button" class="view3d-btn" data-room="kids">View in 3D</button></div>
             <div class="panel-text"><span>03</span><h3>Bedrooms for big families</h3><p>Shared rooms with built-in bunks, closets and homework spots that fit, with no wasted corners.</p></div>
           </article>
           <article class="panel">
-            <div class="panel-img"><img src="images/concepts/mudroom-entry-storage.jpg" alt="Mudroom with built-in cubbies, hooks and a bench" loading="lazy"></div>
+            <div class="panel-img"><img src="images/concepts/mudroom-entry-storage.jpg" alt="Mudroom with built-in cubbies, hooks and a bench" loading="lazy"><button type="button" class="view3d-btn" data-room="mudroom">View in 3D</button></div>
             <div class="panel-text"><span>04</span><h3>Entry &amp; everyday storage</h3><p>A mudroom wall that holds coats, bags and shoes, with tall cabinets for Pesach dishes, so the entry stays clear.</p></div>
           </article>
           <article class="panel">
@@ -344,6 +344,23 @@
     <span class="lb-count"></span>
   </div>
 
+
+  <div class="room-modal" id="roomModal" role="dialog" aria-modal="true" aria-labelledby="roomModalTitle" hidden data-lenis-prevent>
+    <div class="room-modal-backdrop" data-room-close></div>
+    <div class="room-modal-panel">
+      <button type="button" class="room-modal-close" data-room-close aria-label="Close 3D view">&times;</button>
+      <h2 id="roomModalTitle" class="room-modal-title">Room in 3D</h2>
+      <div class="room-stage" id="roomStage">
+        <div class="room-fallback" id="roomFallback" hidden>
+          <p>This 3D room needs WebGL, which this browser doesn't support. The photo still shows the same layout.</p>
+        </div>
+        <div class="room-loading" id="roomLoading" hidden>Loading the 3D room&hellip;</div>
+        <canvas class="room-canvas" id="roomCanvas" aria-label="Interactive 3D view of the room"></canvas>
+        <p class="room-hint">Drag to rotate &middot; scroll or pinch to zoom</p>
+      </div>
+    </div>
+  </div>
+
   <script src="js/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
@@ -356,6 +373,7 @@
   }
   </script>
   <script type="module" src="js/tour.js"></script>
+  <script type="module" src="js/room-viewer.js"></script>
 </body>
 </html>
 
