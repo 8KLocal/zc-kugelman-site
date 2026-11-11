@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1152 864" width="1152" height="864">
+  <defs>
+    <filter id="paper" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.92  0 0 0 0 0.86  0 0 0 0 0.74  0 0 0 0.18 0" result="t"/>
+      <feBlend in="SourceGraphic" in2="t" mode="multiply"/>
+    </filter>
+    <style>
+    .ew { fill:#2b2b2b; }
+    .iw { fill:#2b2b2b; }
+    .win { fill:none; stroke:#2b2b2b; stroke-width:1.05; stroke-linecap:square; }
+    .door { fill:none; stroke:#2b2b2b; stroke-width:1.15; stroke-linecap:round; stroke-linejoin:round; }
+    .furn { fill:rgba(106,88,64,0.09); stroke:#2b2b2b; stroke-width:1.05; stroke-linejoin:round; }
+    .furns { fill:none; stroke:#2b2b2b; stroke-width:1.05; }
+    .island { fill:rgba(244,234,216,0.85); stroke:#2b2b2b; stroke-width:1.15; }
+    .range { fill:rgba(43,43,43,0.16); stroke:#2b2b2b; stroke-width:1.05; }
+    .sink { fill:none; stroke:#2b2b2b; stroke-width:1.05; }
+    .dim { fill:none; stroke:#9a7b4f; stroke-width:1; stroke-linecap:square; }
+    .rn { font:600 13px Jost, "Noto Sans", sans-serif; letter-spacing:2.4px; fill:#2b2b2b; }
+    .rd { font:italic 18px "Cormorant Garamond", "EB Garamond", Georgia, serif; fill:#9a7b4f; }
+    .dt { font:16px "Cormorant Garamond", "EB Garamond", Georgia, serif; fill:#9a7b4f; }
+    .note { font:italic 15px "Cormorant Garamond", "EB Garamond", Georgia, serif; fill:#5a554f; }
+    .zt { font:600 10px Jost, "Noto Sans", sans-serif; letter-spacing:1.8px; fill:#2b2b2b; }
+    .title { font:600 15px Cinzel, "EB Garamond", serif; letter-spacing:4px; fill:#2b2b2b; }
+    .sub { font:italic 15px "Cormorant Garamond", "EB Garamond", Georgia, serif; fill:#9a7b4f; }
+    .foot { font:11px Jost, "Noto Sans", sans-serif; letter-spacing:2.2px; fill:#9a7b4f; }
+    .n-c { fill:none; stroke:#9a7b4f; stroke-width:1.2; }
+    .n-a { fill:#9a7b4f; }
+    .col { fill:#efe4d0; stroke:#2b2b2b; stroke-width:1.05; }
+    .step { fill:none; stroke:#2b2b2b; stroke-width:1.05; }
+    .porch { fill:rgba(201,165,90,0.10); stroke:#9a7b4f; stroke-width:1.4; }
+    .wash { fill:rgba(201,165,90,0.28); }
+    .stair { fill:none; stroke:#2b2b2b; stroke-width:1.05; }
+    .stair-fill { fill:rgba(244,234,216,0.5); stroke:#2b2b2b; stroke-width:1.05; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1152" height="864" fill="#f4ead8" filter="url(#paper)"/>
+  <g id='plan'>
+    <text x="576.00" y="32.00" class="title" text-anchor="middle">GROUND FLOOR PLAN</text>
+    <text x="576.00" y="50.00" class="sub" text-anchor="middle">Illustrative example  ·  64'-0&quot; × 22'-0&quot; plus an 8'-0&quot; front porch</text>
+    <rect x="118.00" y="148.00" width="228.00" height="313.50" class="wash"/>
+    <rect x="346.00" y="148.00" width="285.00" height="313.50" class="wash"/>
+    <rect x="802.00" y="148.00" width="228.00" height="313.50" class="wash"/>
+    <rect x="110.88" y="461.50" width="926.25" height="121.12" class="porch"/>
+    <rect x="118.71" y="155.84" width="35.62" height="39.90" class="furn"/>
+    <rect x="118.00" y="148.00" width="28.50" height="192.38" class="furn"/>
+    <rect x="118.71" y="150.14" width="35.62" height="42.75" class="furn"/>
+    <rect x="120.14" y="197.88" width="24.22" height="25.65" class="sink" rx="1"/>
+    <line x1="121.85" y1="210.70" x2="142.65" y2="210.70" class="sink"/>
+    <line x1="120.14" y1="210.70" x2="117.57" y2="210.70" class="sink"/>
+    <line x1="117.57" y1="208.42" x2="117.57" y2="212.98" class="sink"/>
+    <rect x="119.42" y="227.80" width="26.36" height="37.05" class="range"/>
+    <circle cx="125.41" cy="233.78" r="2.85" class="furns"/>
+    <circle cx="125.41" cy="258.87" r="2.85" class="furns"/>
+    <circle cx="139.80" cy="233.78" r="2.85" class="furns"/>
+    <circle cx="139.80" cy="258.87" r="2.85" class="furns"/>
+    <text x="132.25" y="284.80" class="zt" text-anchor="middle" transform="rotate(-90 132.25 284.80)">MEAT</text>
+    <rect x="118.00" y="376.00" width="35.62" height="42.75" class="furn"/>
+    <rect x="153.62" y="148.00" width="175.28" height="28.50" class="furn"/>
+    <rect x="183.55" y="150.14" width="28.50" height="24.22" class="sink" rx="1"/>
+    <line x1="197.80" y1="151.85" x2="197.80" y2="172.65" class="sink"/>
+    <line x1="197.80" y1="150.14" x2="197.80" y2="147.57" class="sink"/>
+    <line x1="195.52" y1="147.57" x2="200.08" y2="147.57" class="sink"/>
+    <rect x="220.60" y="149.43" width="37.05" height="26.36" class="range"/>
+    <circle cx="226.59" cy="155.41" r="2.85" class="furns"/>
+    <circle cx="226.59" cy="169.80" r="2.85" class="furns"/>
+    <circle cx="251.67" cy="155.41" r="2.85" class="furns"/>
+    <circle cx="251.67" cy="169.80" r="2.85" class="furns"/>
+    <text x="277.60" y="164.39" class="zt" text-anchor="middle">DAIRY</text>
+    <rect x="182.12" y="277.67" width="99.75" height="49.88" class="island"/>
+    <rect x="184.26" y="279.81" width="95.48" height="45.60" class="furns"/>
+    <text x="232.00" y="304.75" class="zt" text-anchor="middle">PAREVE</text>
+    <rect x="403.00" y="278.39" width="171.00" height="57.00" class="furn" rx="2"/>
+    <rect x="410.33" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="410.33" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="437.61" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="437.61" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="464.89" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="464.89" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="492.16" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="492.16" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="519.44" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="519.44" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="546.72" y="254.88" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="546.72" y="338.95" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="379.49" y="296.91" width="19.95" height="19.95" class="furn" rx="4"/>
+    <rect x="577.56" y="296.91" width="19.95" height="19.95" class="furn" rx="4"/>
+    <text x="488.50" y="247.75" class="note" text-anchor="middle">seats 14</text>
+    <rect x="438.62" y="150.14" width="114.00" height="21.38" class="furn"/>
+    <rect x="837.62" y="212.12" width="171.00" height="171.00" class="furns"/>
+    <rect x="837.62" y="212.12" width="171.00" height="171.00" class="furns" stroke-dasharray="4 3" fill="rgba(154,123,79,0.08)"/>
+    <rect x="990.10" y="247.75" width="39.90" height="114.00" class="furn" rx="3"/>
+    <rect x="844.75" y="247.75" width="37.05" height="37.05" class="furn" rx="4"/>
+    <rect x="844.75" y="314.73" width="37.05" height="37.05" class="furn" rx="4"/>
+    <rect x="906.02" y="283.38" width="57.00" height="34.20" class="furn"/>
+    <rect x="736.45" y="150.85" width="22.80" height="19.95" class="furn"/>
+    <rect x="738.59" y="152.99" width="17.10" height="12.83" class="sink" rx="1"/>
+    <line x1="747.14" y1="152.99" x2="747.14" y2="150.56" class="sink"/>
+    <line x1="745.00" y1="150.56" x2="749.27" y2="150.56" class="sink"/>
+    <rect x="774.21" y="169.38" width="21.38" height="34.20" class="furn" rx="3"/>
+    <circle cx="784.90" cy="195.74" r="7.84" class="furns"/>
+    <rect x="635.99" y="262.00" width="85.50" height="45.60" class="stair-fill"/>
+    <rect x="635.99" y="307.60" width="42.75" height="128.25" class="stair-fill"/>
+    <rect x="678.74" y="307.60" width="42.75" height="128.25" class="stair-fill"/>
+    <line x1="635.99" y1="320.42" x2="678.74" y2="320.42" class="stair"/>
+    <line x1="678.74" y1="320.42" x2="721.49" y2="320.42" class="stair"/>
+    <line x1="635.99" y1="333.25" x2="678.74" y2="333.25" class="stair"/>
+    <line x1="678.74" y1="333.25" x2="721.49" y2="333.25" class="stair"/>
+    <line x1="635.99" y1="346.07" x2="678.74" y2="346.07" class="stair"/>
+    <line x1="678.74" y1="346.07" x2="721.49" y2="346.07" class="stair"/>
+    <line x1="635.99" y1="358.90" x2="678.74" y2="358.90" class="stair"/>
+    <line x1="678.74" y1="358.90" x2="721.49" y2="358.90" class="stair"/>
+    <line x1="635.99" y1="371.73" x2="678.74" y2="371.73" class="stair"/>
+    <line x1="678.74" y1="371.73" x2="721.49" y2="371.73" class="stair"/>
+    <line x1="635.99" y1="384.55" x2="678.74" y2="384.55" class="stair"/>
+    <line x1="678.74" y1="384.55" x2="721.49" y2="384.55" class="stair"/>
+    <line x1="635.99" y1="397.38" x2="678.74" y2="397.38" class="stair"/>
+    <line x1="678.74" y1="397.38" x2="721.49" y2="397.38" class="stair"/>
+    <line x1="635.99" y1="410.20" x2="678.74" y2="410.20" class="stair"/>
+    <line x1="678.74" y1="410.20" x2="721.49" y2="410.20" class="stair"/>
+    <line x1="635.99" y1="423.02" x2="678.74" y2="423.02" class="stair"/>
+    <line x1="678.74" y1="423.02" x2="721.49" y2="423.02" class="stair"/>
+    <line x1="678.74" y1="307.60" x2="678.74" y2="435.85" class="stair"/>
+    <text x="657.36" y="371.73" class="zt" text-anchor="middle">UP</text>
+    <path d="M 657.36 397.38 L 657.36 371.74" class="stair"/>
+    <path d="M 652.36 377.74 L 657.36 371.74 L 662.36 377.74" class="stair"/>
+    <rect x="114.44" y="144.44" width="79.09" height="7.12" class="ew"/>
+    <rect x="250.53" y="144.44" width="498.75" height="7.12" class="ew"/>
+    <rect x="786.32" y="144.44" width="72.68" height="7.12" class="ew"/>
+    <rect x="937.38" y="144.44" width="96.19" height="7.12" class="ew"/>
+    <line x1="193.52" y1="146.00" x2="250.53" y2="146.00" class="win"/>
+    <line x1="193.52" y1="148.00" x2="250.53" y2="148.00" class="win"/>
+    <line x1="193.52" y1="150.00" x2="250.53" y2="150.00" class="win"/>
+    <line x1="749.27" y1="146.00" x2="786.32" y2="146.00" class="win"/>
+    <line x1="749.27" y1="148.00" x2="786.32" y2="148.00" class="win"/>
+    <line x1="749.27" y1="150.00" x2="786.32" y2="150.00" class="win"/>
+    <line x1="859.00" y1="146.00" x2="937.38" y2="146.00" class="win"/>
+    <line x1="859.00" y1="148.00" x2="937.38" y2="148.00" class="win"/>
+    <line x1="859.00" y1="150.00" x2="937.38" y2="150.00" class="win"/>
+    <rect x="114.44" y="457.94" width="46.31" height="7.12" class="ew"/>
+    <rect x="217.75" y="457.94" width="220.88" height="7.12" class="ew"/>
+    <rect x="524.12" y="457.94" width="167.44" height="7.12" class="ew"/>
+    <rect x="741.44" y="457.94" width="117.56" height="7.12" class="ew"/>
+    <rect x="937.38" y="457.94" width="96.19" height="7.12" class="ew"/>
+    <line x1="160.75" y1="459.50" x2="217.75" y2="459.50" class="win"/>
+    <line x1="160.75" y1="461.50" x2="217.75" y2="461.50" class="win"/>
+    <line x1="160.75" y1="463.50" x2="217.75" y2="463.50" class="win"/>
+    <line x1="438.62" y1="459.50" x2="524.12" y2="459.50" class="win"/>
+    <line x1="438.62" y1="461.50" x2="524.12" y2="461.50" class="win"/>
+    <line x1="438.62" y1="463.50" x2="524.12" y2="463.50" class="win"/>
+    <line x1="859.00" y1="459.50" x2="937.38" y2="459.50" class="win"/>
+    <line x1="859.00" y1="461.50" x2="937.38" y2="461.50" class="win"/>
+    <line x1="859.00" y1="463.50" x2="937.38" y2="463.50" class="win"/>
+    <rect x="114.44" y="144.44" width="7.12" height="81.94" class="ew"/>
+    <rect x="114.44" y="286.23" width="7.12" height="47.03" class="ew"/>
+    <rect x="114.44" y="383.12" width="7.12" height="81.94" class="ew"/>
+    <line x1="116.00" y1="226.38" x2="116.00" y2="286.23" class="win"/>
+    <line x1="118.00" y1="226.38" x2="118.00" y2="286.23" class="win"/>
+    <line x1="120.00" y1="226.38" x2="120.00" y2="286.23" class="win"/>
+    <line x1="116.00" y1="333.25" x2="116.00" y2="383.12" class="win"/>
+    <line x1="118.00" y1="333.25" x2="118.00" y2="383.12" class="win"/>
+    <line x1="120.00" y1="333.25" x2="120.00" y2="383.12" class="win"/>
+    <rect x="1026.44" y="144.44" width="7.12" height="67.69" class="ew"/>
+    <rect x="1026.44" y="283.38" width="7.12" height="57.00" class="ew"/>
+    <rect x="1026.44" y="411.62" width="7.12" height="53.44" class="ew"/>
+    <line x1="1028.01" y1="212.12" x2="1028.01" y2="283.38" class="win"/>
+    <line x1="1030.00" y1="212.12" x2="1030.00" y2="283.38" class="win"/>
+    <line x1="1031.99" y1="212.12" x2="1031.99" y2="283.38" class="win"/>
+    <line x1="1028.01" y1="340.38" x2="1028.01" y2="411.62" class="win"/>
+    <line x1="1030.00" y1="340.38" x2="1030.00" y2="411.62" class="win"/>
+    <line x1="1031.99" y1="340.38" x2="1031.99" y2="411.62" class="win"/>
+    <rect x="343.15" y="148.00" width="5.70" height="114.00" class="iw"/>
+    <rect x="343.15" y="347.50" width="5.70" height="114.00" class="iw"/>
+    <rect x="628.15" y="148.00" width="5.70" height="185.25" class="iw"/>
+    <rect x="628.15" y="411.62" width="5.70" height="49.88" class="iw"/>
+    <rect x="799.15" y="148.00" width="5.70" height="163.88" class="iw"/>
+    <rect x="799.15" y="354.62" width="5.70" height="106.88" class="iw"/>
+    <rect x="727.90" y="148.00" width="5.70" height="75.52" class="iw"/>
+    <rect x="727.90" y="259.15" width="5.70" height="2.85" class="iw"/>
+    <rect x="730.75" y="259.15" width="71.25" height="5.70" class="iw"/>
+    <line x1="741.44" y1="461.50" x2="691.56" y2="461.50" class="door"/>
+    <path d="M 691.56 461.50 A 49.88 49.88 0 0 1 741.44 411.62" class="door"/>
+    <line x1="802.00" y1="311.88" x2="802.00" y2="354.62" class="door"/>
+    <path d="M 802.00 354.62 A 42.75 42.75 0 0 0 844.75 311.88" class="door"/>
+    <line x1="730.75" y1="223.52" x2="730.75" y2="259.15" class="door"/>
+    <path d="M 730.75 259.15 A 35.62 35.62 0 0 0 766.38 223.52" class="door"/>
+    <rect x="118.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="118.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="232.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="232.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="346.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="346.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="460.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="460.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="574.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="574.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="673.75" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="673.75" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="759.25" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="759.25" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="859.00" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="859.00" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="944.50" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="944.50" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="1020.02" y="465.78" width="9.97" height="9.97" class="col"/>
+    <rect x="1020.02" y="565.53" width="9.97" height="9.97" class="col"/>
+    <rect x="680.88" y="575.50" width="71.25" height="9.97" class="step"/>
+    <rect x="679.45" y="585.47" width="74.10" height="9.97" class="step"/>
+    <rect x="678.02" y="595.45" width="76.95" height="9.97" class="step"/>
+    <text x="232.00" y="397.38" class="rn" text-anchor="middle">KITCHEN</text>
+    <text x="232.00" y="416.61" class="rd" text-anchor="middle">16'-0&quot; × 22'-0&quot;</text>
+    <text x="488.50" y="405.93" class="rn" text-anchor="middle">DINING</text>
+    <text x="488.50" y="425.16" class="rd" text-anchor="middle">20'-0&quot; × 22'-0&quot;</text>
+    <text x="680.88" y="217.82" class="rn" text-anchor="middle">ENTRY</text>
+    <text x="680.88" y="237.06" class="rd" text-anchor="middle">12'-0&quot; × 22'-0&quot;</text>
+    <text x="766.38" y="125.91" class="rn" text-anchor="middle">POWDER</text>
+    <text x="766.38" y="143.01" class="rd" text-anchor="middle">5'-0&quot; × 8'-0&quot;</text>
+    <text x="916.00" y="187.90" class="rn" text-anchor="middle">LIVING</text>
+    <text x="916.00" y="207.14" class="rd" text-anchor="middle">16'-0&quot; × 22'-0&quot;</text>
+    <text x="239.12" y="512.09" class="rn" text-anchor="start">FRONT PORCH</text>
+    <text x="239.12" y="533.46" class="rd" text-anchor="start">8'-0&quot; deep</text>
+    <line x1="118.00" y1="631.50" x2="1030.00" y2="631.50" class="dim"/>
+    <line x1="118.00" y1="625.50" x2="118.00" y2="637.50" class="dim"/>
+    <line x1="1030.00" y1="625.50" x2="1030.00" y2="637.50" class="dim"/>
+    <text x="574.00" y="623.50" class="dt" text-anchor="middle">64'-0&quot;</text>
+    <line x1="118.00" y1="106.00" x2="346.00" y2="106.00" class="dim"/>
+    <line x1="118.00" y1="100.00" x2="118.00" y2="112.00" class="dim"/>
+    <line x1="346.00" y1="100.00" x2="346.00" y2="112.00" class="dim"/>
+    <text x="232.00" y="98.00" class="dt" text-anchor="middle">16'-0&quot;</text>
+    <line x1="346.00" y1="106.00" x2="631.00" y2="106.00" class="dim"/>
+    <line x1="346.00" y1="100.00" x2="346.00" y2="112.00" class="dim"/>
+    <line x1="631.00" y1="100.00" x2="631.00" y2="112.00" class="dim"/>
+    <text x="488.50" y="98.00" class="dt" text-anchor="middle">20'-0&quot;</text>
+    <line x1="631.00" y1="106.00" x2="802.00" y2="106.00" class="dim"/>
+    <line x1="631.00" y1="100.00" x2="631.00" y2="112.00" class="dim"/>
+    <line x1="802.00" y1="100.00" x2="802.00" y2="112.00" class="dim"/>
+    <text x="716.50" y="98.00" class="dt" text-anchor="middle">12'-0&quot;</text>
+    <line x1="802.00" y1="106.00" x2="1030.00" y2="106.00" class="dim"/>
+    <line x1="802.00" y1="100.00" x2="802.00" y2="112.00" class="dim"/>
+    <line x1="1030.00" y1="100.00" x2="1030.00" y2="112.00" class="dim"/>
+    <text x="916.00" y="98.00" class="dt" text-anchor="middle">16'-0&quot;</text>
+    <line x1="1066.00" y1="148.00" x2="1066.00" y2="461.50" class="dim"/>
+    <line x1="1060.00" y1="148.00" x2="1072.00" y2="148.00" class="dim"/>
+    <line x1="1060.00" y1="461.50" x2="1072.00" y2="461.50" class="dim"/>
+    <text x="1076.00" y="304.75" class="dt" text-anchor="middle" transform="rotate(90 1076.00 304.75)">22'-0&quot;</text>
+    <line x1="1066.00" y1="461.50" x2="1066.00" y2="575.50" class="dim"/>
+    <line x1="1060.00" y1="461.50" x2="1072.00" y2="461.50" class="dim"/>
+    <line x1="1060.00" y1="575.50" x2="1072.00" y2="575.50" class="dim"/>
+    <text x="1076.00" y="518.50" class="dt" text-anchor="middle" transform="rotate(90 1076.00 518.50)">8'-0&quot;</text>
+    <circle cx="1000.00" cy="128.00" r="16" class="n-c"/>
+    <path d="M 1000.00 112.00 L 1007.00 134.00 L 1000.00 130.00 L 993.00 134.00 Z" class="n-a"/>
+    <text x="1000.00" y="152.00" class="dt" text-anchor="middle">N</text>
+    <line x1="80.00" y1="770.00" x2="222.50" y2="770.00" class="dim"/>
+    <line x1="80.00" y1="764.00" x2="80.00" y2="776.00" class="dim"/>
+    <text x="80.00" y="756.00" class="dt" text-anchor="middle">0</text>
+    <line x1="151.25" y1="764.00" x2="151.25" y2="776.00" class="dim"/>
+    <text x="151.25" y="756.00" class="dt" text-anchor="middle">5</text>
+    <line x1="222.50" y1="764.00" x2="222.50" y2="776.00" class="dim"/>
+    <text x="222.50" y="756.00" class="dt" text-anchor="middle">10 ft</text>
+    <rect x="80.00" y="768.00" width="71.25" height="4.00" fill="#9a7b4f"/>
+    <text x="576.00" y="840.00" class="foot" text-anchor="middle">SAMPLE  ·  ILLUSTRATIVE EXAMPLE PLAN  ·  NOT A REAL CLIENT HOME</text>
+    <text x="576.00" y="856.00" class="foot" text-anchor="middle">Meat and dairy each have a sink and a range  ·  pareve island  ·  dining table seats 14</text>
+  </g>
+</svg>
